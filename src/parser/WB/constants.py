@@ -10,7 +10,7 @@ COUNTER_OF_INDEX_FOR_SLEEP_IN_LOOP = 10
 # Count value after which need make sleep in AsyncRequesterWB._find_api_url_from_network
 ASYNC_REQUESTER_SLEEP_INDEX_VALUE = 5
 
-CHUNK_SIZE = 50
+CHUNK_SIZE = 10
 
 # Duration of timeout by millisecond after you go to page in AsyncRequesterWB._find_api_url_from_network
 ASYNC_REQUESTER_TIMEOUT = 1000
@@ -51,14 +51,17 @@ PRODUCT_CATEGORY = "subj_root_name"
 PRODUCT_MAIN_CATEGORY = "subj_name"
 PRODUCT_DESCRIPTION = "description"
 
-PRODUCT_BRAND_NAME_KEY = "brand_name"
+PRODUCT_SELLING = "selling"
+PRODUCT_BRAND_NAME = "brand_name"
 PRODUCT_BRAND_ID_KEY = "brand_Id"
 PRODUCT_DETAIL_LIST_KEY = "options"
 
+PRODUCT_DETAIL_KEY_VALUES = "values"
 PRODUCT_DETAIL_KEY_VALUE = "value"
+PRODUCT_SIZE_DETAILS = "details"
 
 PRODUCT_COMPOSITIONS = "compositions"
-PRODUCT_DETAIL_COMPOSITIONS = "Состав"
+PRODUCT_DETAIL_COMPOSITIONS = ["Состав", "Состав ювелирного изделия"]
 
 PRODUCT_SIZES_TABLE = "sizes_table"
 PRODUCT_SIZES_TABLE_TECH_SIZE_KEY = "tech_size"
@@ -75,8 +78,7 @@ PRODUCT_MADE_IN = "made_in"
 
 PRODUCT_PERSONAL_INFO_KEYS = [PRODUCT_DESCRIPTION,
                               PRODUCT_CATEGORY,
-                              PRODUCT_MAIN_CATEGORY,
-                              PRODUCT_BRAND_NAME_KEY
+                              PRODUCT_MAIN_CATEGORY
                               ]
 
 FEEDBACKS_KEY = "feedbacks"
