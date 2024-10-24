@@ -57,13 +57,16 @@ class ParserWB(IParser):
             '''Non-nested data in dictionary
             '''
             for key in constants.PRODUCT_PERSONAL_INFO_KEYS:
-                product[key] = dict_parser.find_key_in_dict(key)
+                product[key] = data.get(key, config.NULL_VALUE)
 
             '''Nested data in dictionary
             '''
             # Brand
-            product[constants.PRODUCT_BRAND_NAME] = dict_parser.find_key_in_dict(constants.PRODUCT_SELLING)[
-                constants.PRODUCT_BRAND_NAME]
+            selling_dict = data.get(constants.PRODUCT_SELLING, config.NULL_VALUE)
+            if selling_dict is not config.NULL_VALUE:
+                product[constants.PRODUCT_BRAND_NAME] = selling_dict[constants.PRODUCT_BRAND_NAME]
+            else:
+                product[constants.PRODUCT_BRAND_NAME] = config.NULL_VALUE
 
             # Size columns
             product[constants.PRODUCT_SIZES_TABLE] = dict_parser.get_table_size()
