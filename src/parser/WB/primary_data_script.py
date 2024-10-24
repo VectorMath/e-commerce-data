@@ -41,7 +41,7 @@ global_start_time = time.time()
 start_time = time.time()
 print(f"Starting parsing product list of {constants.LAST_PAGE - constants.FIRST_PAGE} pages")
 
-df_product_list = parser.parse_product_list()[:10]  # Work very fast so we don't need few threads for that.
+df_product_list = parser.parse_product_list()  # Work very fast so we don't need few threads for that.
 
 end_time = time.time()
 print(f"Finished - {(end_time - start_time):.2f} seconds\n")

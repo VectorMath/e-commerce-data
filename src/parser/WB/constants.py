@@ -10,7 +10,7 @@ COUNTER_OF_INDEX_FOR_SLEEP_IN_LOOP = 10
 # Count value after which need make sleep in AsyncRequesterWB._find_api_url_from_network
 ASYNC_REQUESTER_SLEEP_INDEX_VALUE = 5
 
-CHUNK_SIZE = 10
+CHUNK_SIZE = 25
 
 # Duration of timeout by millisecond after you go to page in AsyncRequesterWB._find_api_url_from_network
 ASYNC_REQUESTER_TIMEOUT = 1000
@@ -44,7 +44,7 @@ PRICE_HISTORY_PRICE_KEY = "price"
 PRICE_HISTORY_CURRENT_CURRENCY_KEY = "RUB"
 
 FIRST_PAGE = 1
-LAST_PAGE = 11
+LAST_PAGE = 3
 
 PRODUCT_NAME_KEY = "imt_name"
 PRODUCT_CATEGORY = "subj_root_name"

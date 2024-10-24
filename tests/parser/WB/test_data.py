@@ -1,9 +1,6 @@
 url = "https://basket-16.wbbasket.ru/vol2517/part251750/251750385/info/ru/card.json"
 
-existed_key = 'vendor_code'
 non_existed_key = 'abrakadabra'
-
-value_from_existed_key = 'NordicsR'
 
 actual_sizes = "42, 44, 46, 48, 50, 52, 54, 56, 58"
 

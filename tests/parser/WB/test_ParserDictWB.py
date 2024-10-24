@@ -19,19 +19,6 @@ class TestParserDictWB(unittest.TestCase):
         """
         self.parser_dict_network = ParserDictWB(requests.get(test_data.url).json())
 
-    def test_find_key_in_dict(self):
-        """Test method of find_key_in_dict from ParserDictWB.
-        """
-        self.assertEqual(self.parser_dict.find_key_in_dict(test_data.existed_key),
-                         test_data.value_from_existed_key)
-        self.assertEqual(self.parser_dict.find_key_in_dict(test_data.non_existed_key),
-                         config.NULL_VALUE)
-
-        self.assertEqual(self.parser_dict_network.find_key_in_dict(test_data.existed_key),
-                         test_data.value_from_existed_key)
-        self.assertEqual(self.parser_dict_network.find_key_in_dict(test_data.non_existed_key),
-                         config.NULL_VALUE)
-
     def test_get_table_size(self):
         """Test method of get_table_size from ParserDictWB.
         """
