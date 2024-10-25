@@ -30,6 +30,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 parser: IParser = ParserWB()
 
+df_product_list = pd.DataFrame()
 df_urls = pd.DataFrame()
 products_df = pd.DataFrame()
 price_history_df = pd.DataFrame()
@@ -41,7 +42,9 @@ global_start_time = time.time()
 start_time = time.time()
 print(f"Starting parsing product list of {constants.LAST_PAGE - constants.FIRST_PAGE} pages")
 
-df_product_list = parser.parse_product_list()  # Work very fast so we don't need few threads for that.
+for page in range(constants.FIRST_PAGE, constants.LAST_PAGE):
+    df_product_list = pd.concat(
+        [df_product_list, parser.parse_product_list(page)])  # Work very fast so we don't need few threads for that.
 
 end_time = time.time()
 print(f"Finished - {(end_time - start_time):.2f} seconds\n")

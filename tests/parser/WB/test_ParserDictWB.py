@@ -13,7 +13,7 @@ class TestParserDictWB(unittest.TestCase):
     """Test class for ParserDictWB
     """
     def setUp(self):
-        self.parser_dict = ParserDictWB(test_data.dict_for_test_ParserDictWB)
+        self.parser_dict = ParserDictWB(test_data.dict_for_test)
 
         """For case if WB would change JSON structure again
         """
