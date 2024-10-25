@@ -1,11 +1,10 @@
-import time
 from datetime import datetime
 
 import pandas as pd
 import requests
 from requests import Response
 
-import constants
+from src.parser.WB import constants
 from src import config
 from src.parser.IParser import IParser
 from src.parser.WB.ParserDictWB import ParserDictWB
@@ -20,31 +19,28 @@ class ParserWB(IParser):
         """
         pass
 
-    def parse_product_list(self) -> pd.DataFrame:
+    def parse_product_list(self, page_number: int) -> pd.DataFrame:
         result_table: list = []
         try:
-            for page_number in range(constants.FIRST_PAGE, constants.LAST_PAGE):
-                if page_number % constants.PRODUCT_LIST_PAGE_NUMBER_FOR_SLEEP == 0:
-                    time.sleep(constants.TIME_FOR_SLEEP)
+            url: str = constants.PRODUCT_LIST_URL.replace(constants.SYMBOL_TO_REPLACE_FOR_PAGE_NUMBER_IN_URL,
+                                                          str(page_number))
+            response: Response = requests.get(url)
+            data: dict = response.json()[constants.DATA_KEY][constants.PRODUCTS_KEY]
 
-                url: str = constants.PRODUCT_LIST_URL.replace(constants.SYMBOL_TO_REPLACE_FOR_PAGE_NUMBER_IN_URL,
-                                                              str(page_number))
-                response: Response = requests.get(url)
-                data: dict = response.json()[constants.DATA_KEY][constants.PRODUCTS_KEY]
-
-                for product in data:
-                    if constants.ID_KEY in product:
-                        product_info = {
-                            constants.PRODUCT_ID: str(product[constants.ID_KEY]),
-                            constants.ROOT_ID: str(product[constants.ROOT_KEY]),
-                            constants.PRODUCT_NAME: product[constants.NAME_KEY],
-                        }
-                        result_table.append(product_info)
+            for product in data:
+                if constants.ID_KEY in product:
+                    product_info = {
+                        constants.PRODUCT_ID: str(product[constants.ID_KEY]),
+                        constants.ROOT_ID: str(product[constants.ROOT_KEY]),
+                        constants.PRODUCT_NAME: product[constants.NAME_KEY],
+                    }
+                    result_table.append(product_info)
 
             return pd.DataFrame(result_table)
 
         except requests.exceptions.HTTPError as e:
             raise SystemExit(e)
+
 
     def parse_product_personal_info(self, product_url: str) -> pd.DataFrame:
         product: dict = {}
@@ -97,6 +93,7 @@ class ParserWB(IParser):
         except requests.exceptions.HTTPError as e:
             raise SystemExit(e)
 
+
     def parse_product_price_history(self, price_url: str) -> pd.DataFrame:
         dt_list: list[datetime] = []
         price_list: list[float] = []
@@ -123,6 +120,7 @@ class ParserWB(IParser):
                 )
         except requests.exceptions.HTTPError as e:
             raise SystemExit(e)
+
 
     def parse_product_feedback(self, product_id: int, root_id: int) -> pd.DataFrame:
         comments: list[str] = []

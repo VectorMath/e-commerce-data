@@ -8,7 +8,7 @@ actual_made_in_value = "Китай"
 actual_color = "черный"
 actual_compositions = "флис; полиэстер; эластан"
 
-dict_for_test_ParserDictWB = {
+dict_for_test = {
   "imt_id": 227510481,
   "nm_id": 251750385,
   "imt_name": "Термобелье комплект зимний спортивный",
@@ -266,3 +266,4 @@ dict_for_test_ParserDictWB = {
     }
   ]
 }
+

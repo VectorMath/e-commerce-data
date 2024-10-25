@@ -5,7 +5,7 @@ class IParser:
     """The parser interface
     """
 
-    def parse_product_list(self) -> pd.DataFrame:
+    def parse_product_list(self, page_number: int) -> pd.DataFrame:
         """Get ID list of products from current page
 
         :return: dataframe with ids
