@@ -3,7 +3,6 @@ from unittest.mock import patch, MagicMock
 
 import pandas as pd
 import pandas.testing as pdt
-import pytest
 
 from src.parser.WB.AsyncRequesterWB import AsyncRequesterWB
 from tests.parser.WB import test_data
