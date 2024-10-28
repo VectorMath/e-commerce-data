@@ -1,4 +1,5 @@
 mock_method = "requests.get"
+mock_async_method = "src.parser.WB.AsyncRequesterWB.AsyncRequesterWB._find_api_url_from_network"
 
 from src.parser.WB import constants
 
@@ -15,6 +16,25 @@ actual_sizes = "42, 44, 46, 48, 50, 52, 54, 56, 58"
 actual_made_in_value = "Китай"
 actual_color = "черный"
 actual_compositions = "флис; полиэстер; эластан"
+
+products_id_list = [251750385, 225946142]
+roots_id_list = [227510481, 115520650]
+
+card_json_urls = [
+    "https://basket-16.wbbasket.ru/vol2517/part251750/251750385/info/ru/card.json",
+    "https://basket-15.wbbasket.ru/vol2259/part225946/225946142/info/ru/card.json"
+]
+
+card_json_urls_with_duplicate = [
+    "https://basket-16.wbbasket.ru/vol2517/part251750/251750385/info/ru/card.json",
+    "https://basket-16.wbbasket.ru/vol2517/part251750/251750385/info/ru/card.json",
+    "https://basket-15.wbbasket.ru/vol2259/part225946/225946142/info/ru/card.json"
+]
+
+price_history_json_urls = [
+    "https://basket-16.wbbasket.ru/vol2517/part251750/251750385/info/price-history.json",
+    "https://basket-15.wbbasket.ru/vol2259/part225946/225946142/info/price-history.json"
+]
 
 product_response = {
     "imt_id": 227510481,
