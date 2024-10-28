@@ -38,9 +38,16 @@ class ParserWB(IParser):
 
             return pd.DataFrame(result_table)
 
-        except requests.exceptions.HTTPError as e:
-            raise SystemExit(e)
 
+        except requests.exceptions.HTTPError as e:
+            print(f"HTTP Error: {e}")
+            raise  # raise need for unit tests
+        except requests.exceptions.ConnectionError as e:
+            print(f"Connection Error: {e}")
+            raise
+        except KeyError as e:
+            print(f"KeyError: {e}")
+            raise
 
     def parse_product_personal_info(self, product_url: str) -> pd.DataFrame:
         product: dict = {}
@@ -91,8 +98,17 @@ class ParserWB(IParser):
             return pd.DataFrame([product])
 
         except requests.exceptions.HTTPError as e:
-            raise SystemExit(e)
-
+            print(f"HTTP Error: {e}")
+            raise
+        except requests.exceptions.ConnectionError as e:
+            print(f"Connection Error: {e}")
+            raise
+        except KeyError as e:
+            print(f"Key Error: {e}")
+            raise
+        except IndexError as e:
+            print(f"Index Error: {e}")
+            raise
 
     def parse_product_price_history(self, price_url: str) -> pd.DataFrame:
         dt_list: list[datetime] = []
@@ -119,8 +135,17 @@ class ParserWB(IParser):
                     }
                 )
         except requests.exceptions.HTTPError as e:
-            raise SystemExit(e)
-
+            print(f"HTTP Error: {e}")
+            raise
+        except requests.exceptions.ConnectionError as e:
+            print(f"Connection Error: {e}")
+            raise
+        except KeyError as e:
+            print(f"Key Error: {e}")
+            raise
+        except IndexError as e:
+            print(f"Index Error: {e}")
+            raise
 
     def parse_product_feedback(self, product_id: int, root_id: int) -> pd.DataFrame:
         comments: list[str] = []
@@ -138,7 +163,8 @@ class ParserWB(IParser):
                     continue
                 else:
                     for feedback in feedbacks:
-                        if product_id == str(feedback[constants.FEEDBACK_PRODUCT_ID_KEY]):
+                        if product_id == feedback[constants.FEEDBACK_PRODUCT_ID_KEY]:
+                            print(123456789)
                             comments.append(feedback[constants.FEEDBACK_COMMENT_KEY])
                             date = feedback[constants.FEEDBACK_DATE_KEY][:constants.FEEDBACK_LAST_INDEX_OF_DATE_STR]
                             comments_date.append(date)
@@ -155,4 +181,11 @@ class ParserWB(IParser):
                     })
 
             except requests.exceptions.HTTPError as e:
-                raise SystemExit(e)
+                print(f"HTTP Error: {e}")
+                raise
+            except requests.exceptions.ConnectionError as e:
+                print(f"Connection Error: {e}")
+                raise
+            except KeyError as e:
+                print(f"Key Error: {e}")
+                raise

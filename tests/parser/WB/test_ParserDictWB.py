@@ -13,11 +13,11 @@ class TestParserDictWB(unittest.TestCase):
     """Test class for ParserDictWB
     """
     def setUp(self):
-        self.parser_dict = ParserDictWB(test_data.dict_for_test)
+        self.parser_dict = ParserDictWB(test_data.product_response)
 
         """For case if WB would change JSON structure again
         """
-        self.parser_dict_network = ParserDictWB(requests.get(test_data.url).json())
+        self.parser_dict_network = ParserDictWB(requests.get(test_data.product_url).json())
 
     def test_get_table_size(self):
         """Test method of get_table_size from ParserDictWB.
