@@ -75,3 +75,8 @@ class AsyncRequesterWB:
         }
 
         return pd.DataFrame(table)
+
+    def get_product_id_list(self) -> list[str]:
+        """Get method for field _product_ids
+        """
+        return self._product_ids
