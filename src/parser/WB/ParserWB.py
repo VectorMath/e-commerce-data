@@ -7,7 +7,7 @@ from requests import Response
 from src.parser.WB import constants
 from src import config
 from src.parser.IParser import IParser
-from src.parser.WB.ParserDictWB import ParserDictWB
+from src.parser.WB.ProductDictExtractWB import ProductDictExtractWB
 
 
 class ParserWB(IParser):
@@ -54,7 +54,6 @@ class ParserWB(IParser):
 
         try:
             data: dict = requests.get(product_url).json()
-            dict_parser: ParserDictWB = ParserDictWB(data)
 
             product[constants.PRODUCT_ID] = product_url.split('/')[-4]  # Extract product_id from url
             '''Non-nested data in dictionary
@@ -72,22 +71,22 @@ class ParserWB(IParser):
                 product[constants.PRODUCT_BRAND_NAME] = config.NULL_VALUE
 
             # Size columns
-            product[constants.PRODUCT_SIZES_TABLE] = dict_parser.get_table_size()
+            product[constants.PRODUCT_SIZES_TABLE] = ProductDictExtractWB.get_table_size(data)
             product[constants.PRODUCT_MIN_SIZE] = product[constants.PRODUCT_SIZES_TABLE].split(
                 constants.SPLIT_VALUE)[0]
             product[constants.PRODUCT_MAX_SIZE] = product[constants.PRODUCT_SIZES_TABLE].split(
                 constants.SPLIT_VALUE)[-1]
 
             # Colors column
-            product[constants.PRODUCT_COLOR] = dict_parser.get_characteristic_from_options(
+            product[constants.PRODUCT_COLOR] = ProductDictExtractWB.get_characteristic_from_options(data,
                 constants.PRODUCT_DETAIL_COLOR)
 
             # Made in column
-            product[constants.PRODUCT_MADE_IN] = dict_parser.get_characteristic_from_options(
+            product[constants.PRODUCT_MADE_IN] = ProductDictExtractWB.get_characteristic_from_options(data,
                 constants.PRODUCT_DETAIL_MADE_IN)
 
             # Compositions column
-            product[constants.PRODUCT_COMPOSITIONS] = dict_parser.get_characteristic_from_options(
+            product[constants.PRODUCT_COMPOSITIONS] = ProductDictExtractWB.get_characteristic_from_options(data,
                 constants.PRODUCT_DETAIL_COMPOSITIONS)
 
             # Upload date
