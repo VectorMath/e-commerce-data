@@ -44,7 +44,7 @@ print(f"Starting parsing product list of {constants.LAST_PAGE - constants.FIRST_
 
 for page in range(constants.FIRST_PAGE, constants.LAST_PAGE):
     df_product_list = pd.concat(
-        [df_product_list, parser.parse_product_list(page)])  # Work very fast so we don't need few threads for that.
+        [df_product_list, parser.parse_product_list_id(page)])  # Work very fast so we don't need few threads for that.
 
 end_time = time.time()
 print(f"Finished - {(end_time - start_time):.2f} seconds\n")
@@ -72,7 +72,7 @@ for i, chunk in enumerate(product_chunks):
     print(f"[{constants.THREADS_COUNT} THREADS] Starting collect personal info about products")
 
     with ThreadPoolExecutor(max_workers=constants.THREADS_COUNT) as executor:
-        futures = {executor.submit(parser.parse_product_personal_info, url): url for url in
+        futures = {executor.submit(parser.parse_product, url): url for url in
                    df_urls[constants.PRODUCT_CARD_JSON_TITLE]}
 
         for future in as_completed(futures):
