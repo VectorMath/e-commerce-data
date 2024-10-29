@@ -1,6 +1,6 @@
 from typing import Any
 
-from . import constants # "import constants" get error in tests.
+from src.parser.WB import constants
 from src import config
 
 
@@ -21,6 +21,7 @@ class ParserDictWB:
         """
         sizes: list[str] = []
         sizes_table = self._data.get(constants.PRODUCT_SIZES_TABLE, config.NULL_VALUE)
+
         if sizes_table is not config.NULL_VALUE:
             values = sizes_table.get(constants.PRODUCT_DETAIL_KEY_VALUES, config.NULL_VALUE)
         else:
