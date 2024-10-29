@@ -109,3 +109,5 @@ PATH_TO_URLS = 'csv/urls.csv'
 PATH_TO_PRODUCTS = 'csv/products.csv'
 PATH_TO_PRICE_HISTORY = 'csv/price-history.csv'
 PATH_TO_FEEDBACK = 'csv/feedbacks.csv'
+
+INVALID_RESPONSE_MESSAGE = "Validator can't find this key in response: "
