@@ -11,8 +11,7 @@ from src.parser.WB import constants
 
 class TestAsyncRequesterWB(unittest.TestCase):
     def setUp(self):
-        self.requester = AsyncRequesterWB(test_data.products_id_list,
-                                          test_data.roots_id_list)
+        self.requester = AsyncRequesterWB(test_data.product_id_list)
 
     @patch(test_data.mock_async_method)
     def test_create_table_with_json_urls(self, mock: MagicMock):

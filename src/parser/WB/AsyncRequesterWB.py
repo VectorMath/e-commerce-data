@@ -13,14 +13,11 @@ class AsyncRequesterWB:
     Usually, this class uses the result of method parse_product_list of class ParserWB.
     """
 
-    def __init__(self, product_ids: list[str], root_ids: list[str]):
+    def __init__(self, product_id_list: list[str]):
         """Class constructor
-
-        :param product_ids: list of product_id
-        :param root_ids: list of root_id
+        :param product_id_list: list of product_id
         """
-        self._product_ids: list[str] = product_ids
-        self._root_ids: list[str] = root_ids
+        self._product_id_list: list[str] = product_id_list
 
     async def _find_api_url_from_network(self) -> list[str]:
         """Async private method that extract API URLs from network requests.
@@ -37,7 +34,7 @@ class AsyncRequesterWB:
 
             page.on("response", intercept_response)
 
-            for index, product_id in enumerate(self._product_ids):
+            for index, product_id in enumerate(self._product_id_list):
                 if index % constants.ASYNC_REQUESTER_SLEEP_INDEX_VALUE == 0 and index != 0:
                     time.sleep(constants.TIME_FOR_SLEEP)
 
@@ -50,6 +47,7 @@ class AsyncRequesterWB:
     def create_table_with_json_urls(self) -> pd.DataFrame:
         """Method that using private method _find_api_url_from_network
         and create table with product_id and URLs on personal info and price history
+        :return: DataFrame with json urls of product and price history.
         """
         product_card_urls: list[str] = asyncio.run(self._find_api_url_from_network())
         price_history_urls: list[str] = []
@@ -64,12 +62,12 @@ class AsyncRequesterWB:
         ''' Sometimes method return duplicates of first row
         Here we checking for that and remove.
         '''
-        if len(self._product_ids) < len(product_card_urls):
+        if len(self._product_id_list) < len(product_card_urls):
             product_card_urls = product_card_urls[1:]
             price_history_urls = price_history_urls[1:]
 
         table: dict = {
-            constants.PRODUCT_ID: self._product_ids,
+            constants.PRODUCT_ID: self._product_id_list,
             constants.PRODUCT_CARD_JSON_TITLE: product_card_urls,
             constants.PRODUCT_PRICE_HISTORY_JSON_TITLE: price_history_urls
         }
@@ -77,6 +75,6 @@ class AsyncRequesterWB:
         return pd.DataFrame(table)
 
     def get_product_id_list(self) -> list[str]:
-        """Get method for field _product_ids
+        """Get method for field _product_id_list
         """
-        return self._product_ids
+        return self._product_id_list
