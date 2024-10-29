@@ -59,8 +59,7 @@ for i, chunk in enumerate(product_chunks):
     start_time = time.time()
     print(f"Starting create table of json URLs")
 
-    network_requester = AsyncRequesterWB(product_ids=list(chunk[constants.PRODUCT_ID]),
-                                         root_ids=list(chunk[constants.ROOT_ID]))
+    network_requester = AsyncRequesterWB(product_id_list=list(chunk[constants.PRODUCT_ID]))
 
     df_urls = pd.concat([df_urls, network_requester.create_table_with_json_urls()])
 

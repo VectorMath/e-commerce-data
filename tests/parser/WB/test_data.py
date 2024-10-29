@@ -17,8 +17,7 @@ actual_made_in_value = "Китай"
 actual_color = "черный"
 actual_compositions = "флис; полиэстер; эластан"
 
-products_id_list = [251750385, 225946142]
-roots_id_list = [227510481, 115520650]
+product_id_list = [251750385, 225946142]
 
 card_json_urls = [
     "https://basket-16.wbbasket.ru/vol2517/part251750/251750385/info/ru/card.json",
