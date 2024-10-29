@@ -19,7 +19,7 @@ class ParserWB(IParser):
         """
         pass
 
-    def parse_product_list(self, page_number: int) -> pd.DataFrame:
+    def parse_product_list_id(self, page_number: int) -> pd.DataFrame:
         result_table: list = []
         try:
             url: str = constants.PRODUCT_LIST_URL.replace(constants.SYMBOL_TO_REPLACE_FOR_PAGE_NUMBER_IN_URL,
@@ -49,7 +49,7 @@ class ParserWB(IParser):
             print(f"KeyError: {e}")
             raise
 
-    def parse_product_personal_info(self, product_url: str) -> pd.DataFrame:
+    def parse_product(self, product_url: str) -> pd.DataFrame:
         product: dict = {}
 
         try:
