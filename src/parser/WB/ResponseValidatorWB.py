@@ -16,7 +16,7 @@ class ResponseValidatorWB:
         """
         try:
             if response[constants.DATA_KEY]:
-                if [constants.DATA_KEY][constants.PRODUCTS_KEY]:
+                if response[constants.DATA_KEY][constants.PRODUCTS_KEY]:
                     for product in response[constants.DATA_KEY][constants.PRODUCTS_KEY]:
                         if product[constants.ID_KEY]:
                             return True
@@ -41,7 +41,7 @@ class ResponseValidatorWB:
             for key in constants.PRODUCT_PERSONAL_INFO_KEYS:
                 if response[key]:
                     continue
-                return True
+            return True
         except KeyError as e:
             print(constants.INVALID_RESPONSE_MESSAGE + e)
             raise
