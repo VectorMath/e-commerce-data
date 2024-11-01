@@ -45,6 +45,8 @@ print(f"Starting parsing product list of {constants.LAST_PAGE - constants.FIRST_
 for page in range(constants.FIRST_PAGE, constants.LAST_PAGE):
     df_product_list = pd.concat(
         [df_product_list, parser.parse_product_list_id(page)])  # Work very fast so we don't need few threads for that.
+    df_product_list.drop_duplicates(inplace=True) # Sometime can be duplicates.
+    df_product_list = df_product_list
 
 end_time = time.time()
 print(f"Finished - {(end_time - start_time):.2f} seconds\n")
@@ -62,6 +64,7 @@ for i, chunk in enumerate(product_chunks):
     network_requester = AsyncRequesterWB(product_id_list=list(chunk[constants.PRODUCT_ID]))
 
     df_urls = pd.concat([df_urls, network_requester.create_table_with_json_urls()])
+    df_urls.drop_duplicates(inplace=True)
 
     end_time = time.time()
     print(f"Finished - {(end_time - start_time):.2f} seconds\n")
@@ -134,7 +137,6 @@ products_df = products_df[[constants.ROOT_ID,
                            constants.PRODUCT_BRAND_NAME,
                            constants.PRODUCT_MAIN_CATEGORY,
                            constants.PRODUCT_CATEGORY,
-                           constants.PRODUCT_DESCRIPTION,
                            constants.PRODUCT_SIZES_TABLE,
                            constants.PRODUCT_MIN_SIZE,
                            constants.PRODUCT_MAX_SIZE,
