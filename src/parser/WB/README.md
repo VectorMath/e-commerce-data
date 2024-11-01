@@ -17,7 +17,9 @@ The module that realize parsing-functional for web-store
 
 * [**ParserWB**](ParserWB.py) - realization of interface [IParser](../IParser.py) for web store Wildberries
 
+
 * [**ResponseValidatorWB**](ResponseValidatorWB.py) - static class that validate structure of responses. Using in class [ParserWB](ParserWB.py)
+
 
 * [**primary_data_script**](primary_data_script.py) - script that launching to collect primary data from web store 
   Wildberries. after finish give you 4 csv files, that will be contained in folder [csv](csv). For more detail look in
