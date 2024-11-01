@@ -46,9 +46,6 @@ class ParserWB(IParser):
         except requests.exceptions.ConnectionError as e:
             print(f"Connection Error: {e}")
             raise
-        except KeyError as e:
-            print(f"KeyError: {e}")
-            raise
 
     def parse_product(self, product_url: str) -> pd.DataFrame:
         product: dict = {}
@@ -105,9 +102,6 @@ class ParserWB(IParser):
         except requests.exceptions.ConnectionError as e:
             print(f"Connection Error: {e}")
             raise
-        except KeyError as e:
-            print(f"Key Error: {e}")
-            raise
         except IndexError as e:
             print(f"Index Error: {e}")
             raise
@@ -142,9 +136,6 @@ class ParserWB(IParser):
             raise
         except requests.exceptions.ConnectionError as e:
             print(f"Connection Error: {e}")
-            raise
-        except KeyError as e:
-            print(f"Key Error: {e}")
             raise
         except IndexError as e:
             print(f"Index Error: {e}")
@@ -189,7 +180,4 @@ class ParserWB(IParser):
                 raise
             except requests.exceptions.ConnectionError as e:
                 print(f"Connection Error: {e}")
-                raise
-            except KeyError as e:
-                print(f"Key Error: {e}")
                 raise

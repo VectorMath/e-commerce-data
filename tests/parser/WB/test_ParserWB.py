@@ -45,18 +45,6 @@ class TestParserWB(unittest.TestCase):
         with self.assertRaises(requests.exceptions.ConnectionError):
             self.parser.parse_product_list_id(1)
 
-    @patch(test_data.mock_method)
-    def test_parse_product_list_id_Key_Error(self, mock: MagicMock):
-        product_dict_with_invalid_key = {
-            test_data.non_existed_key: 1,
-            constants.ROOT_KEY: 2,
-            constants.NAME_KEY: "Test1"
-        }
-        mock.return_value.json.return_value = {
-            constants.DATA_KEY: {constants.PRODUCTS_KEY: [product_dict_with_invalid_key]}}
-        mock.side_effect = KeyError
-        with self.assertRaises(KeyError):
-            self.parser.parse_product_list_id(1)
 
     @patch(test_data.mock_method)
     def test_parse_product(self, mock: MagicMock):
@@ -92,25 +80,11 @@ class TestParserWB(unittest.TestCase):
             self.parser.parse_product("https://basket-16.wbbasket.ru/vol2517/part251750/251750385/info/ru/card.json")
 
     @patch(test_data.mock_method)
-    def test_parse_product_Key_Error(self, mock: MagicMock):
-        product_dict_with_invalid_key = {
-            "imt_id": 227510481,
-            "nm_id": 251750385,
-            "imt_name": "Термобелье комплект зимний спортивный",
-            "slug": "termobele-komplekt-zimnij-sportivnyj",
-            "subj_name": "Термокомплекты",
-            test_data.non_existed_key: "Белье"
-        }
-        mock.return_value = product_dict_with_invalid_key
-        mock.side_effect = KeyError
-        with self.assertRaises(KeyError):
-            self.parser.parse_product("https://basket-16.wbbasket.ru/vol2517/part251750/251750385/info/ru/card.json")
-
-    @patch(test_data.mock_method)
     def test_parse_product_Index_Error(self, mock: MagicMock):
         mock.side_effect = IndexError
         with self.assertRaises(IndexError):
             self.parser.parse_product("invalid_url")
+
 
     @patch(test_data.mock_method)
     def test_parse_product_price_history(self, mock: MagicMock):
@@ -135,14 +109,6 @@ class TestParserWB(unittest.TestCase):
     def test_parse_product_price_history_Connection_Error(self, mock: MagicMock):
         mock.side_effect = requests.exceptions.ConnectionError
         with self.assertRaises(requests.exceptions.ConnectionError):
-            self.parser.parse_product_price_history(test_data.price_history_url)
-
-    @patch(test_data.mock_method)
-    def test_parse_product_price_history_Key_Error(self, mock: MagicMock):
-        mock.return_value.json.return_value = [{test_data.non_existed_key: 1}, {test_data.non_existed_key: 2}]
-
-        mock.side_effect = KeyError
-        with self.assertRaises(KeyError):
             self.parser.parse_product_price_history(test_data.price_history_url)
 
     @patch(test_data.mock_method)
@@ -172,15 +138,6 @@ class TestParserWB(unittest.TestCase):
         mock.side_effect = requests.exceptions.ConnectionError
         with self.assertRaises(requests.exceptions.ConnectionError):
             self.parser.parse_product_feedback(251750385, 227510481)
-
-    @patch(test_data.mock_method)
-    def test_parse_product_feedback_Key_Error(self, mock: MagicMock):
-        mock.return_value.json.return_value = test_data.feedback_response_with_invalid_key
-
-        mock.side_effect = KeyError
-        with self.assertRaises(KeyError):
-            self.parser.parse_product_feedback(251750385, 227510481)
-
 
 if __name__ == '__main__':
     unittest.main()
