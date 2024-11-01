@@ -14,11 +14,6 @@ class ParserWB(IParser):
     """The realization of IParser for online store 'WildBerries'
     """
 
-    def __init__(self):
-        """Class Constructor
-        """
-        pass
-
     def parse_product_list_id(self, page_number: int) -> pd.DataFrame:
         result_table: list = []
         try:
