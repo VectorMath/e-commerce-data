@@ -41,6 +41,7 @@ class AsyncRequesterWB:
                 await page.goto(constants.PRODUCT_URL.replace(constants.PRODUCT_ID, product_id), wait_until='load')
                 await page.wait_for_timeout(constants.ASYNC_REQUESTER_TIMEOUT)
 
+            await page.close()
             await browser.close()
             return urls
 

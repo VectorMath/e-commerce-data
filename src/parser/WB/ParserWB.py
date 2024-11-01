@@ -61,16 +61,19 @@ class ParserWB(IParser):
                 # Brand
                 selling_dict = data.get(constants.PRODUCT_SELLING, config.NULL_VALUE)
                 if selling_dict is not config.NULL_VALUE:
-                    product[constants.PRODUCT_BRAND_NAME] = selling_dict[constants.PRODUCT_BRAND_NAME]
-                else:
-                    product[constants.PRODUCT_BRAND_NAME] = config.NULL_VALUE
+                    product[constants.PRODUCT_BRAND_NAME] = selling_dict.get(constants.PRODUCT_BRAND_NAME,
+                                                                             config.NULL_VALUE)
 
                 # Size columns
                 product[constants.PRODUCT_SIZES_TABLE] = ProductDictExtractWB.get_table_size(data)
-                product[constants.PRODUCT_MIN_SIZE] = product[constants.PRODUCT_SIZES_TABLE].split(
-                    constants.SPLIT_VALUE)[0]
-                product[constants.PRODUCT_MAX_SIZE] = product[constants.PRODUCT_SIZES_TABLE].split(
-                    constants.SPLIT_VALUE)[-1]
+                if product[constants.PRODUCT_SIZES_TABLE] is not config.NULL_VALUE:
+                    product[constants.PRODUCT_MIN_SIZE] = product[constants.PRODUCT_SIZES_TABLE].split(
+                        constants.SPLIT_VALUE)[0]
+                    product[constants.PRODUCT_MAX_SIZE] = product[constants.PRODUCT_SIZES_TABLE].split(
+                        constants.SPLIT_VALUE)[-1]
+                else:
+                    product[constants.PRODUCT_MIN_SIZE] = config.NULL_VALUE
+                    product[constants.PRODUCT_MAX_SIZE] = config.NULL_VALUE
 
                 # Colors column
                 product[constants.PRODUCT_COLOR] = ProductDictExtractWB.get_characteristic_from_options(data,
@@ -154,7 +157,7 @@ class ParserWB(IParser):
                 else:
                     if ResponseValidatorWB.validate_feedback(response):
                         for feedback in feedbacks:
-                            if product_id == feedback[constants.FEEDBACK_PRODUCT_ID_KEY]:
+                            if str(product_id) == str(feedback[constants.FEEDBACK_PRODUCT_ID_KEY]):
                                 comments.append(feedback[constants.FEEDBACK_COMMENT_KEY])
                                 date = feedback[constants.FEEDBACK_DATE_KEY][:constants.FEEDBACK_LAST_INDEX_OF_DATE_STR]
                                 comments_date.append(date)
