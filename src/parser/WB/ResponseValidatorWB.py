@@ -21,7 +21,7 @@ class ResponseValidatorWB:
                         if product[constants.ID_KEY]:
                             return True
         except KeyError as e:
-            print(constants.INVALID_RESPONSE_MESSAGE + e)
+            print(constants.INVALID_RESPONSE_MESSAGE + str(e))
             raise
 
     @staticmethod
@@ -43,7 +43,7 @@ class ResponseValidatorWB:
                     continue
             return True
         except KeyError as e:
-            print(constants.INVALID_RESPONSE_MESSAGE + e)
+            print(constants.INVALID_RESPONSE_MESSAGE + str(e))
             raise
 
     @staticmethod
@@ -61,7 +61,7 @@ class ResponseValidatorWB:
                         if price[constants.PRICE_HISTORY_PRICE_KEY][constants.PRICE_HISTORY_CURRENT_CURRENCY_KEY]:
                             return True
         except KeyError as e:
-            print(constants.INVALID_RESPONSE_MESSAGE + e)
+            print(constants.INVALID_RESPONSE_MESSAGE + str(e))
             raise
 
     @staticmethod
@@ -81,5 +81,5 @@ class ResponseValidatorWB:
                                 if feedback[constants.FEEDBACK_GRADE_KEY]:
                                     return True
         except KeyError as e:
-            print(constants.INVALID_RESPONSE_MESSAGE + e)
+            print(constants.INVALID_RESPONSE_MESSAGE + str(e))
             raise
