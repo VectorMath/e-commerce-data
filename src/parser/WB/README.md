@@ -52,8 +52,8 @@ Finished - 382.76 seconds
   is information about files:
     * ### Feedback
       Contains info about feedbacks for products:
-        * **Count rows:** ~612 000
-        * **File size:** 64.6 MB
+        * **Count rows:** ~697 252
+        * **File size:** 74.3 MB
         * **Table structure:**
 
           |           root_id           |    product_id     |             date              |     comment     |       grade       |
@@ -62,8 +62,8 @@ Finished - 382.76 seconds
 
     * ### Price history
       Contains info about price history of products:
-        * **Count rows:** 8 376
-        * **File size:** 236 KB
+        * **Count rows:** 9 056
+        * **File size:** 255 KB
         * **Table structure:**
 
           |    product_id     |     date      |         price         |
@@ -72,8 +72,8 @@ Finished - 382.76 seconds
  
     * ### Products
       Contains personal info about products:
-        * **Count rows:** 187
-        * **File size:** 558 KB
+        * **Count rows:** 194
+        * **File size:** 570 KB
         * **Table structure:**
 
           |           root_id           |    product_id     |             date             |       product_name       |      description       |      brand_name       |              subj_name               |             subj_root_name              |      size_table      |           min_size           |           max_size           |          color          |            made_in             |      compositions       |
@@ -82,8 +82,8 @@ Finished - 382.76 seconds
 
     * ### Urls
       Contains URLs of JSONs for tables **Products** and **Price history**:
-        * **Count rows:** 187
-        * **File size:** 31 KB
+        * **Count rows:** 194
+        * **File size:** 32 KB
         * **Table structure:**
 
           |    product_id     |                      card_json_url                       |                          price_history_json_url                           |
