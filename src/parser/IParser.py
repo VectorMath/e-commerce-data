@@ -5,14 +5,14 @@ class IParser:
     """The parser interface
     """
 
-    def parse_product_list(self) -> pd.DataFrame:
+    def parse_product_list_id(self, page_number: int) -> pd.DataFrame:
         """Get ID list of products from current page
 
         :return: dataframe with ids
         """
         pass
 
-    def parse_product_personal_info(self, product_url: str) -> pd.DataFrame:
+    def parse_product(self, product_url: str) -> pd.DataFrame:
         """Get info personal info about product with current product_id
 
         :param product_url: url of product

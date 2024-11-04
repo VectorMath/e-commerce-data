@@ -30,6 +30,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 parser: IParser = ParserWB()
 
+df_product_list = pd.DataFrame()
 df_urls = pd.DataFrame()
 products_df = pd.DataFrame()
 price_history_df = pd.DataFrame()
@@ -41,7 +42,11 @@ global_start_time = time.time()
 start_time = time.time()
 print(f"Starting parsing product list of {constants.LAST_PAGE - constants.FIRST_PAGE} pages")
 
-df_product_list = parser.parse_product_list()[:10]  # Work very fast so we don't need few threads for that.
+for page in range(constants.FIRST_PAGE, constants.LAST_PAGE):
+    df_product_list = pd.concat(
+        [df_product_list, parser.parse_product_list_id(page)])  # Work very fast so we don't need few threads for that.
+    df_product_list.drop_duplicates(inplace=True) # Sometime can be duplicates.
+    df_product_list = df_product_list
 
 end_time = time.time()
 print(f"Finished - {(end_time - start_time):.2f} seconds\n")
@@ -56,10 +61,10 @@ for i, chunk in enumerate(product_chunks):
     start_time = time.time()
     print(f"Starting create table of json URLs")
 
-    network_requester = AsyncRequesterWB(product_ids=list(chunk[constants.PRODUCT_ID]),
-                                         root_ids=list(chunk[constants.ROOT_ID]))
+    network_requester = AsyncRequesterWB(product_id_list=list(chunk[constants.PRODUCT_ID]))
 
     df_urls = pd.concat([df_urls, network_requester.create_table_with_json_urls()])
+    df_urls.drop_duplicates(subset=constants.PRODUCT_CARD_JSON_TITLE, inplace=True)
 
     end_time = time.time()
     print(f"Finished - {(end_time - start_time):.2f} seconds\n")
@@ -70,7 +75,7 @@ for i, chunk in enumerate(product_chunks):
     print(f"[{constants.THREADS_COUNT} THREADS] Starting collect personal info about products")
 
     with ThreadPoolExecutor(max_workers=constants.THREADS_COUNT) as executor:
-        futures = {executor.submit(parser.parse_product_personal_info, url): url for url in
+        futures = {executor.submit(parser.parse_product, url): url for url in
                    df_urls[constants.PRODUCT_CARD_JSON_TITLE]}
 
         for future in as_completed(futures):
@@ -132,7 +137,6 @@ products_df = products_df[[constants.ROOT_ID,
                            constants.PRODUCT_BRAND_NAME,
                            constants.PRODUCT_MAIN_CATEGORY,
                            constants.PRODUCT_CATEGORY,
-                           constants.PRODUCT_DESCRIPTION,
                            constants.PRODUCT_SIZES_TABLE,
                            constants.PRODUCT_MIN_SIZE,
                            constants.PRODUCT_MAX_SIZE,
