@@ -12,10 +12,13 @@ The module that realize parsing-functional for web-store
 * [**constants**](constants.py) - file with constant values that using in module
 
 
-* [**ParserDictWB**](ParserDictWB.py) - class that extract info from dictionary. Using in class [ParserWB](ParserWB.py)
+* [**ProductDictExtractWB**](ProductDictExtractWB.py) - static class that extract info from dictionary. Using in class [ParserWB](ParserWB.py)
 
 
 * [**ParserWB**](ParserWB.py) - realization of interface [IParser](../IParser.py) for web store Wildberries
+
+
+* [**ResponseValidatorWB**](ResponseValidatorWB.py) - static class that validate structure of responses. Using in class [ParserWB](ParserWB.py)
 
 
 * [**primary_data_script**](primary_data_script.py) - script that launching to collect primary data from web store 
@@ -49,8 +52,8 @@ Finished - 382.76 seconds
   is information about files:
     * ### Feedback
       Contains info about feedbacks for products:
-        * **Count rows:** ~9 000 000
-        * **File size:** 0.98 GB
+        * **Count rows:** ~697 252
+        * **File size:** 74.3 MB
         * **Table structure:**
 
           |           root_id           |    product_id     |             date              |     comment     |       grade       |
@@ -59,8 +62,8 @@ Finished - 382.76 seconds
 
     * ### Price history
       Contains info about price history of products:
-        * **Count rows:** ~118 000
-        * **File size:** 3.25 MB
+        * **Count rows:** 9 056
+        * **File size:** 255 KB
         * **Table structure:**
 
           |    product_id     |     date      |         price         |
@@ -69,18 +72,18 @@ Finished - 382.76 seconds
  
     * ### Products
       Contains personal info about products:
-        * **Count rows:** 1 000
-        * **File size:** 3.31 MB
+        * **Count rows:** 194
+        * **File size:** 570 KB
         * **Table structure:**
 
-          |           root_id           |    product_id     |             date             |       product_name       |      description       |              subj_name               |             subj_root_name              |      brand_name       |      size_table      |           min_size           |           max_size           |          color          |            made_in             |      compositions       |
-          |:---------------------------:|:-----------------:|:----------------------------:|:------------------------:|:----------------------:|:------------------------------------:|:---------------------------------------:|:---------------------:|:--------------------:|:----------------------------:|:----------------------------:|:-----------------------:|:------------------------------:|:-----------------------:|
-          | the ID of section a product | The ID of product | Date when product was parsed | Name of product on store | Description of product | The type of product (example: Cloth) | The subtype of product (example: Pants) | Name of product brand | All sizes of product | Minimal size from size table | Maximum size from size_table | Color that have product | Country where product was made | Compositions of product |
+          |           root_id           |    product_id     |             date             |       product_name       |      description       |      brand_name       |              subj_name               |             subj_root_name              |      size_table      |           min_size           |           max_size           |          color          |            made_in             |      compositions       |
+          |:---------------------------:|:-----------------:|:----------------------------:|:------------------------:|:----------------------:|:---------------------:|:------------------------------------:|:---------------------------------------:|:--------------------:|:----------------------------:|:----------------------------:|:-----------------------:|:------------------------------:|:-----------------------:|
+          | the ID of section a product | The ID of product | Date when product was parsed | Name of product on store | Description of product | Name of product brand | The type of product (example: Cloth) | The subtype of product (example: Pants) | All sizes of product | Minimal size from size table | Maximum size from size_table | Color that have product | Country where product was made | Compositions of product |
 
     * ### Urls
       Contains URLs of JSONs for tables **Products** and **Price history**:
-        * **Count rows:** 1 000
-        * **File size:** 165 KB
+        * **Count rows:** 194
+        * **File size:** 32 KB
         * **Table structure:**
 
           |    product_id     |                      card_json_url                       |                          price_history_json_url                           |
