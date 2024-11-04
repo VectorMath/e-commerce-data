@@ -64,7 +64,7 @@ for i, chunk in enumerate(product_chunks):
     network_requester = AsyncRequesterWB(product_id_list=list(chunk[constants.PRODUCT_ID]))
 
     df_urls = pd.concat([df_urls, network_requester.create_table_with_json_urls()])
-    df_urls.drop_duplicates(inplace=True)
+    df_urls.drop_duplicates(subset=constants.PRODUCT_CARD_JSON_TITLE, inplace=True)
 
     end_time = time.time()
     print(f"Finished - {(end_time - start_time):.2f} seconds\n")
