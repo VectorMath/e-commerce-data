@@ -5,7 +5,7 @@ from src.database.IConnector import IConnector
 import psycopg2
 
 
-class ConnectionPostgres(IConnector):
+class ConnectorPostgres(IConnector):
     """Class-realization of Interface IConnection for database Postgresql.
     """
 
@@ -14,7 +14,7 @@ class ConnectionPostgres(IConnector):
                  db: str = config.POSTGRES_DB_NAME,
                  username: str = config.POSTGRES_USERNAME,
                  password: str = config.POSTGRES_PASSWORD):
-        """Constructor for class ConnectionPostgres.
+        """Constructor for class ConnectorPostgres.
         """
         self._host: str = host
         self._db: str = db
