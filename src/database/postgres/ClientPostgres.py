@@ -17,8 +17,7 @@ class ClientPostgres(IClient):
     def close_connection(self):
         """Realization of method close_connection from interface IClient.
         """
-        self.get_connector().get_connection().close()
-        self.get_connector().get_cursor().close()
+        self.get_connector().close_connection()
 
     def execute_sql(self, query: str, is_return: bool):
         """Realization of method execute_sql from interface IClient.
