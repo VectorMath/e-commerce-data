@@ -6,7 +6,7 @@ import psycopg2
 
 
 class ConnectorPostgres(IConnector):
-    """Class-realization of Interface IConnection for database Postgresql.
+    """Class-realization of Interface IConnector for database Postgresql.
     """
 
     def __init__(self,
@@ -15,6 +15,10 @@ class ConnectorPostgres(IConnector):
                  username: str = config.POSTGRES_USERNAME,
                  password: str = config.POSTGRES_PASSWORD):
         """Constructor for class ConnectorPostgres.
+        :param host: host of database.
+        :param db: name of your database in Postgres.
+        :username: name of your user in Postgres db.
+        :password: password to your Postgres db.
         """
         self._host: str = host
         self._db: str = db
@@ -25,15 +29,23 @@ class ConnectorPostgres(IConnector):
         self._cursor: cursor = self.get_connection().cursor()
 
     def create_connection(self):
+        """Realization of method create_connection in interface IConnector.
+        For realization is taken library psycopg2.
+        """
         return psycopg2.connect(host=self.get_host(),
                                 database=self.get_db(),
                                 user=self.get_username(),
                                 password=self.get_password())
 
     def close_connection(self):
+        """Realization of method close_connection in interface IConnector.
+        Here we are closing fields _connection and _cursor.
+        """
         self.get_connection().close()
         self.get_cursor().close()
 
+    """Get/Set methods for all fields in class ConnectorPostgres.
+    """
     def get_host(self) -> str:
         return self._host
 
