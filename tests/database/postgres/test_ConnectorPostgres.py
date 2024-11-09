@@ -29,7 +29,7 @@ class TestConnectorPostgres(unittest.TestCase):
         with self.assertRaises(psycopg2.errors.ConnectionException):
             ConnectorPostgres()
 
-    @patch("src.database.postgres.ConnectorPostgres.ConnectorPostgres.create_connection")
+    @patch("psycopg2.connect")
     def test_create_connection_Operational_Error(self, mock: MagicMock):
         mock.side_effect = psycopg2.errors.OperationalError()
         with self.assertRaises(psycopg2.errors.OperationalError):
