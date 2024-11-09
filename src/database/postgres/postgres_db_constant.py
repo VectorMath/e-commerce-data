@@ -1,5 +1,3 @@
-from src.parser.WB import constants
-
 TMP_TABLE = "tmp_table"
 
 ROOT_ID = "root_id"
@@ -20,7 +18,6 @@ COMMENT = "comment"
 PRICE = "price"
 PRODUCT_CARD_JSON = "card_json_url"
 PRODUCT_PRICE_HISTORY_JSON = "price_history_json_url"
-
 
 feedbacks_table_type_dict = {
     ROOT_ID: "INT4",
