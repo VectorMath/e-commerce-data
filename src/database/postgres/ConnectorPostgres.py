@@ -32,10 +32,16 @@ class ConnectorPostgres(IConnector):
         """Realization of method create_connection in interface IConnector.
         For realization is taken library psycopg2.
         """
-        return psycopg2.connect(host=self.get_host(),
-                                database=self.get_db(),
-                                user=self.get_username(),
-                                password=self.get_password())
+        try:
+            return psycopg2.connect(host=self.get_host(),
+                                    database=self.get_db(),
+                                    user=self.get_username(),
+                                    password=self.get_password())
+        except psycopg2.errors.ConnectionException as e:
+            print(f"[{self.__class__.__name__}] Connection error: {str(e)}")
+            raise e
+        except psycopg2.errors.OperationalError as e:
+            print(f"[{self.__class__.__name__}] Operational error: {str(e)}")
 
     def close_connection(self):
         """Realization of method close_connection in interface IConnector.
@@ -46,6 +52,7 @@ class ConnectorPostgres(IConnector):
 
     """Get/Set methods for all fields in class ConnectorPostgres.
     """
+
     def get_host(self) -> str:
         return self._host
 
