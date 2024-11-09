@@ -42,6 +42,7 @@ class ConnectorPostgres(IConnector):
             raise e
         except psycopg2.errors.OperationalError as e:
             print(f"[{self.__class__.__name__}] Operational error: {str(e)}")
+            raise e
 
     def close_connection(self):
         """Realization of method close_connection in interface IConnector.
