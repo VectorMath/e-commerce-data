@@ -42,9 +42,21 @@ class ClientPostgres(IClient):
     def create_dataframe_by_sql(self, query: str) -> pandas.DataFrame:
         """Realization of method create_dataframe_by_sql from interface IClient.
         """
-        data = self.execute_sql(query, True)
-        return pandas.DataFrame(data,
-                                columns=[desc[0] for desc in self.get_connector().get_cursor().description])
+        try:
+            self.get_connector().get_cursor().execute(query)
+            data = self.get_connector().get_cursor().fetchall()
+
+            return pandas.DataFrame(data,
+                                    columns=[desc[0] for desc in self.get_connector().get_cursor().description])
+        except psycopg2.errors.OperationalError as e:
+            print(f"[{self.__class__.__name__}] Operational error: {str(e)}")
+            raise e
+        except psycopg2.errors.ProgrammingError as e:
+            print(f"[{self.__class__.__name__}] Programming error: {str(e)}")
+            raise e
+        except psycopg2.IntegrityError as e:
+            print(f"[{self.__class__.__name__}] Integrity error: {str(e)}")
+            raise e
 
     def create_table_in_db_by_df(self,
                                  df: pandas.DataFrame,

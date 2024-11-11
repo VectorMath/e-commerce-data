@@ -81,5 +81,48 @@ class TestClientPostgres(unittest.TestCase):
             ClientPostgres(connector=mock_connector).execute_sql(query=query, is_return=True)
             ClientPostgres(connector=mock_connector).execute_sql(query=query, is_return=False)
 
+    @patch('src.database.postgres.ConnectorPostgres.ConnectorPostgres')
+    def test_create_dataframe_by_sql(self, mock_connector_postgres: MagicMock):
+        mock_cursor = MagicMock()
+        mock_cursor.fetchall.return_value = [(1, 'd')]
+        mock_cursor.description = [('column1',), ('column2',)]
+
+        mock_connector_postgres.get_cursor.return_value = mock_cursor
+
+        expected_df = pd.DataFrame([(1, 'd')], columns=['column1', 'column2'])
+        client = ClientPostgres(mock_connector_postgres)
+        result_df = client.create_dataframe_by_sql("SELECT * FROM test")
+        pd.testing.assert_frame_equal(result_df, expected_df)
+
+    @patch('src.database.postgres.ConnectorPostgres.ConnectorPostgres')
+    def test_create_dataframe_by_sql_Operational_Error(self, mock_connector_postgres: MagicMock):
+        mock_cursor = MagicMock()
+        mock_cursor.execute.side_effect = psycopg2.errors.OperationalError
+
+        mock_connector_postgres.get_cursor.return_value = mock_cursor
+
+        with self.assertRaises(psycopg2.errors.OperationalError):
+            ClientPostgres(mock_connector_postgres).create_dataframe_by_sql("select * from test")
+
+    @patch('src.database.postgres.ConnectorPostgres.ConnectorPostgres')
+    def test_create_dataframe_by_sql_Programming_Error(self, mock_connector_postgres: MagicMock):
+        mock_cursor = MagicMock()
+        mock_cursor.execute.side_effect = psycopg2.errors.ProgrammingError
+
+        mock_connector_postgres.get_cursor.return_value = mock_cursor
+
+        with self.assertRaises(psycopg2.errors.ProgrammingError):
+            ClientPostgres(mock_connector_postgres).create_dataframe_by_sql("select * from test")
+
+    @patch('src.database.postgres.ConnectorPostgres.ConnectorPostgres')
+    def test_create_dataframe_by_sql_Integrity_Error(self, mock_connector_postgres: MagicMock):
+        mock_cursor = MagicMock()
+        mock_cursor.execute.side_effect = psycopg2.errors.IntegrityError
+
+        mock_connector_postgres.get_cursor.return_value = mock_cursor
+
+        with self.assertRaises(psycopg2.errors.IntegrityError):
+            ClientPostgres(mock_connector_postgres).create_dataframe_by_sql("select * from test")
+
 if __name__ == '__main__':
     unittest.main()
