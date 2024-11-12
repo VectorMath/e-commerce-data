@@ -1,4 +1,5 @@
 import pandas
+import psycopg2.errors
 
 from src.database.IClient import IClient
 from src.database.postgres import postgres_db_constant
@@ -22,18 +23,40 @@ class ClientPostgres(IClient):
     def execute_sql(self, query: str, is_return: bool):
         """Realization of method execute_sql from interface IClient.
         """
-        self.get_connector().get_cursor().execute(query)
-        if is_return:
-            return self.get_connector().get_cursor().fetchall()
-        else:
-            self.get_connector().get_connection().commit()
+        try:
+            self.get_connector().get_cursor().execute(query)
+            if is_return:
+                return self.get_connector().get_cursor().fetchall()
+            else:
+                self.get_connector().get_connection().commit()
+        except psycopg2.errors.OperationalError as e:
+            print(f"[{self.__class__.__name__}] Operational error: {str(e)}")
+            raise e
+        except psycopg2.errors.ProgrammingError as e:
+            print(f"[{self.__class__.__name__}] Programming error: {str(e)}")
+            raise e
+        except psycopg2.IntegrityError as e:
+            print(f"[{self.__class__.__name__}] Integrity error: {str(e)}")
+            raise e
 
     def create_dataframe_by_sql(self, query: str) -> pandas.DataFrame:
         """Realization of method create_dataframe_by_sql from interface IClient.
         """
-        data = self.execute_sql(query, True)
-        return pandas.DataFrame(data,
-                                columns=[desc[0] for desc in self.get_connector().get_cursor().description])
+        try:
+            self.get_connector().get_cursor().execute(query)
+            data = self.get_connector().get_cursor().fetchall()
+
+            return pandas.DataFrame(data,
+                                    columns=[desc[0] for desc in self.get_connector().get_cursor().description])
+        except psycopg2.errors.OperationalError as e:
+            print(f"[{self.__class__.__name__}] Operational error: {str(e)}")
+            raise e
+        except psycopg2.errors.ProgrammingError as e:
+            print(f"[{self.__class__.__name__}] Programming error: {str(e)}")
+            raise e
+        except psycopg2.IntegrityError as e:
+            print(f"[{self.__class__.__name__}] Integrity error: {str(e)}")
+            raise e
 
     def create_table_in_db_by_df(self,
                                  df: pandas.DataFrame,
