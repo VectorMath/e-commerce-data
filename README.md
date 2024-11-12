@@ -74,9 +74,12 @@ This project created for work with different **russian** web stores. In project,
 
  * [**src**](src) - The folder with main code part of project.
    * [**parser**](src/parser) - The folder that contains functional with parsing different web store.
+   * [**database**](src/database) - The folder that contains functional with different databases.
 
 
  * [**docs**](docs) - folder with resources for README documents.
 
 
  * [**tests**](tests) - The folder with unit tests for functional in [**src**](src) folder.
+   * [**parser**](tests/parser) - unit-tests for module **parser**.
+   * [**database**](tests/database) - unit-tests for module **database**.
