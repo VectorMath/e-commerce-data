@@ -18,12 +18,14 @@ COMMENT = "comment"
 PRICE = "price"
 PRODUCT_CARD_JSON = "card_json_url"
 PRODUCT_PRICE_HISTORY_JSON = "price_history_json_url"
+GRADE = "grade"
 
 feedbacks_table_type_dict = {
     ROOT_ID: "INT4",
     PRODUCT_ID: "INT4",
     DATE: "DATE",
-    COMMENT: "VARCHAR(5000)"
+    COMMENT: "VARCHAR(5000)",
+    GRADE: "INT4"
 }
 
 price_history_type_dict = {
