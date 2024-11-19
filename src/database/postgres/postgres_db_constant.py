@@ -19,6 +19,12 @@ PRICE = "price"
 PRODUCT_CARD_JSON = "card_json_url"
 PRODUCT_PRICE_HISTORY_JSON = "price_history_json_url"
 GRADE = "grade"
+MEAN_GRADE = "mean_grade"
+MEAN_GRADE_FILTERED = "mean_grade_filtered"
+MEDIAN_GRADE = "median_grade"
+MEDIAN_GRADE_FILTERED = "median_grade_filtered"
+MODE_GRADE = "mode_grade"
+MODE_GRADE_FILTERED = "mode_grade_filtered"
 
 feedbacks_table_type_dict = {
     ROOT_ID: "INT4",
@@ -55,4 +61,14 @@ urls_table_type_dict = {
     PRODUCT_ID: "INT4",
     PRODUCT_CARD_JSON: "VARCHAR(256)",
     PRODUCT_PRICE_HISTORY_JSON: "VARCHAR(256)"
+}
+
+grade_table_type_dict = {
+    PRODUCT_ID: "INT4",
+    MEAN_GRADE: "FLOAT4",
+    MEAN_GRADE_FILTERED: "FLOAT4",
+    MEDIAN_GRADE: "FLOAT4",
+    MEDIAN_GRADE_FILTERED: "FLOAT4",
+    MODE_GRADE: "FLOAT4",
+    MODE_GRADE_FILTERED: "FLOAT4"
 }

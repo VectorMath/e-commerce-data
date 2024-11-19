@@ -14,3 +14,6 @@ POSTGRES_HOST = "postgres"
 
 PRICE_HISTORY_TABLE = "price_history"
 PRICE_TABLE = "price"
+
+FEEDBACKS_TABLE = "feedbacks"
+GRADE_TABLE = "grade"
