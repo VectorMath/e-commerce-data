@@ -65,6 +65,7 @@ urls_table_type_dict = {
 
 grade_table_type_dict = {
     PRODUCT_ID: "INT4",
+    DATE: "DATE",
     MEAN_GRADE: "FLOAT4",
     MEAN_GRADE_FILTERED: "FLOAT4",
     MEDIAN_GRADE: "FLOAT4",
