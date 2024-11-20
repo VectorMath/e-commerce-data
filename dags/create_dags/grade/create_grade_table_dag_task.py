@@ -81,7 +81,9 @@ def create_table_grade_in_db(**kwargs):
     """Function that take dataframe from task 'create_final_dataframe' and upload him to our database.
     """
     final_df = kwargs['ti'].xcom_pull(task_ids=dag_config.CREATE_FINAL_DATAFRAME_TASK_ID, key='final_df')
+    final_df[postgres_db_constant.DATE] = dag_config.CURRENT_DATE
     final_df = final_df[[postgres_db_constant.PRODUCT_ID,
+                         postgres_db_constant.DATE,
                          postgres_db_constant.MEAN_GRADE,
                          postgres_db_constant.MEAN_GRADE_FILTERED,
                          postgres_db_constant.MEDIAN_GRADE,
