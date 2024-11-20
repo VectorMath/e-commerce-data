@@ -2,6 +2,7 @@
 Here contains constants values and common functions
 for DAG-files 'create_grade_table_dag.py' and 'create_grade_table_dag_task.py'
 """
+from datetime import datetime
 
 import pandas
 from airflow.utils.dates import days_ago
@@ -30,6 +31,9 @@ DEFAULT_ARGS: dict = {
 
 # Count words in column 'comment' in table 'feedbacks'.
 REQUIRED_COUNT_WORDS_FOR_FILTER: int = 10
+
+# Current date
+CURRENT_DATE = datetime.now().strftime("%Y-%m-%d")
 
 # SQL queries
 DROP_GRADE_TABLE_QUERY: str = f"""DROP TABLE IF EXISTS {config.GRADE_TABLE};"""
