@@ -17,3 +17,4 @@ PRICE_TABLE = "price"
 
 FEEDBACKS_TABLE = "feedbacks"
 GRADE_TABLE = "grade"
+GRADE_HISTORY_TABLE = "grade_history"
