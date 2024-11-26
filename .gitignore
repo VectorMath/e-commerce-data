@@ -4,3 +4,5 @@ logs/
 plugins/
 config/
 .env
+src/parser/WB/csv/
+dumps/
