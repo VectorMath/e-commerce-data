@@ -45,27 +45,29 @@ class TestParserWB(unittest.TestCase):
         with self.assertRaises(requests.exceptions.ConnectionError):
             self.parser.parse_product_list_id(1)
 
-
     @patch(test_data.mock_method)
     def test_parse_product(self, mock: MagicMock):
         mock.return_value.json.return_value = test_data.product_response
         actual_product_info = {
+            constants.ROOT_ID: test_data.product_response["imt_id"],
             constants.PRODUCT_ID: str(test_data.product_response["nm_id"]),
+            constants.DATE: datetime.now().strftime("%Y-%m-%d"),
+            constants.PRODUCT_NAME: test_data.product_response["imt_name"],
             constants.PRODUCT_DESCRIPTION: test_data.product_response[constants.PRODUCT_DESCRIPTION],
-            constants.PRODUCT_CATEGORY: test_data.product_response[constants.PRODUCT_CATEGORY],
-            constants.PRODUCT_MAIN_CATEGORY: test_data.product_response[constants.PRODUCT_MAIN_CATEGORY],
             constants.PRODUCT_BRAND_NAME: "Nordics",
+            constants.PRODUCT_MAIN_CATEGORY: test_data.product_response[constants.PRODUCT_MAIN_CATEGORY],
+            constants.PRODUCT_CATEGORY: test_data.product_response[constants.PRODUCT_CATEGORY],
             constants.PRODUCT_SIZES_TABLE: "42, 44, 46, 48, 50, 52, 54, 56, 58",
             constants.PRODUCT_MIN_SIZE: "42",
             constants.PRODUCT_MAX_SIZE: "58",
             constants.PRODUCT_COLOR: "черный",
             constants.PRODUCT_MADE_IN: "Китай",
             constants.PRODUCT_COMPOSITIONS: "флис; полиэстер; эластан",
-            constants.DATE: datetime.now().strftime("%Y-%m-%d")
         }
         actual_result = pd.DataFrame([actual_product_info])
         pdt.assert_frame_equal(
-            self.parser.parse_product("https://basket-16.wbbasket.ru/vol2517/part251750/251750385/info/ru/card.json"), actual_result)
+            self.parser.parse_product("https://basket-16.wbbasket.ru/vol2517/part251750/251750385/info/ru/card.json"),
+            actual_result)
 
     @patch(test_data.mock_method)
     def test_parse_product_HTTP_Error(self, mock: MagicMock):
@@ -84,7 +86,6 @@ class TestParserWB(unittest.TestCase):
         mock.side_effect = IndexError
         with self.assertRaises(IndexError):
             self.parser.parse_product("invalid_url")
-
 
     @patch(test_data.mock_method)
     def test_parse_product_price_history(self, mock: MagicMock):

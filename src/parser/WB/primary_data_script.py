@@ -79,8 +79,7 @@ for i, chunk in enumerate(product_chunks):
                    df_urls[constants.PRODUCT_CARD_JSON_TITLE]}
 
         for future in as_completed(futures):
-            product = pd.merge(future.result(), chunk, on=constants.PRODUCT_ID)
-            products_df = pd.concat([products_df, product])
+            products_df = pd.concat([products_df, future.result()])
 
         if (len(products_df) % constants.COUNTER_OF_INDEX_FOR_SLEEP_IN_LOOP) == 0 and len(products_df) != 0:
             time.sleep(constants.TIME_FOR_SLEEP)
@@ -128,22 +127,6 @@ for i, chunk in enumerate(product_chunks):
 
 '''Export part
 '''
-# Set the sequence in the table products
-products_df = products_df[[constants.ROOT_ID,
-                           constants.PRODUCT_ID,
-                           constants.DATE,
-                           constants.PRODUCT_NAME,
-                           constants.PRODUCT_DESCRIPTION,
-                           constants.PRODUCT_BRAND_NAME,
-                           constants.PRODUCT_MAIN_CATEGORY,
-                           constants.PRODUCT_CATEGORY,
-                           constants.PRODUCT_SIZES_TABLE,
-                           constants.PRODUCT_MIN_SIZE,
-                           constants.PRODUCT_MAX_SIZE,
-                           constants.PRODUCT_COLOR,
-                           constants.PRODUCT_MADE_IN,
-                           constants.PRODUCT_COMPOSITIONS]]
-
 df_urls.to_csv(constants.PATH_TO_URLS, index=False)
 products_df.to_csv(constants.PATH_TO_PRODUCTS, index=False)
 price_history_df.to_csv(constants.PATH_TO_PRICE_HISTORY, index=False)
