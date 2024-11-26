@@ -1,5 +1,0 @@
-*.csv filter=lfs diff=lfs merge=lfs -text
-src/parser/WB/csv/feedbacks.csv filter=lfs diff=lfs merge=lfs -text
-*.sql filter=lfs diff=lfs merge=lfs -text
-*.csv !text !filter !merge !diff
-*.sql !text !filter !merge !diff
