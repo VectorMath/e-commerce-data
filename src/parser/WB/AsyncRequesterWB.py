@@ -51,6 +51,9 @@ class AsyncRequesterWB:
         :return: DataFrame with json urls of product and price history.
         """
         product_card_urls: list[str] = asyncio.run(self._find_api_url_from_network())
+        product_ids: list[int] = []
+        for url in product_card_urls:
+            product_ids.append(int(url.split('/')[-4]))
         price_history_urls: list[str] = []
 
         '''Optimization part, no need make request for product twice.
@@ -60,20 +63,17 @@ class AsyncRequesterWB:
                                            constants.REQUIRED_JSON_FOR_PRODUCT_PRICE_HISTORY)
             price_history_urls.append(changed_url)
 
-        ''' Sometimes method return duplicates of first row
-        Here we checking for that and remove.
-        '''
-        if len(self._product_id_list) < len(product_card_urls):
-            product_card_urls = product_card_urls[1:]
-            price_history_urls = price_history_urls[1:]
-
         table: dict = {
-            constants.PRODUCT_ID: self._product_id_list,
+            constants.PRODUCT_ID: product_ids,
             constants.PRODUCT_CARD_JSON_TITLE: product_card_urls,
             constants.PRODUCT_PRICE_HISTORY_JSON_TITLE: price_history_urls
         }
 
-        return pd.DataFrame(table)
+        ''' Sometimes method return duplicates of first row
+        Here we checking for that and remove.
+        '''
+        result: pd.DataFrame = pd.DataFrame(table).drop_duplicates().reset_index(drop=True)
+        return result
 
     def get_product_id_list(self) -> list[str]:
         """Get method for field _product_id_list

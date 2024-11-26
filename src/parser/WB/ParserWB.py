@@ -90,9 +90,26 @@ class ParserWB(IParser):
                 # Upload date
                 product[constants.DATE] = datetime.now().strftime("%Y-%m-%d")
 
-                '''Sex determination with webdriver, 
-                because json don't have information about for what sex that product'''
-                return pd.DataFrame([product])
+                product_df = pd.DataFrame([product])
+                product_df.rename(columns={constants.PRODUCT_ROOT_ID: constants.ROOT_ID,
+                                           constants.PRODUCT_NAME_KEY: constants.PRODUCT_NAME}, inplace=True)
+                product_df = product_df[[
+                    constants.ROOT_ID,
+                    constants.PRODUCT_ID,
+                    constants.DATE,
+                    constants.PRODUCT_NAME,
+                    constants.PRODUCT_DESCRIPTION,
+                    constants.PRODUCT_BRAND_NAME,
+                    constants.PRODUCT_MAIN_CATEGORY,
+                    constants.PRODUCT_CATEGORY,
+                    constants.PRODUCT_SIZES_TABLE,
+                    constants.PRODUCT_MIN_SIZE,
+                    constants.PRODUCT_MAX_SIZE,
+                    constants.PRODUCT_COLOR,
+                    constants.PRODUCT_MADE_IN,
+                    constants.PRODUCT_COMPOSITIONS
+                ]]
+                return product_df
 
         except requests.exceptions.HTTPError as e:
             print(f"HTTP Error: {e}")

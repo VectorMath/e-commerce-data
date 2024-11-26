@@ -46,6 +46,7 @@ PRICE_HISTORY_CURRENT_CURRENCY_KEY = "RUB"
 FIRST_PAGE = 1
 LAST_PAGE = 3
 
+PRODUCT_ROOT_ID = "imt_id"
 PRODUCT_NAME_KEY = "imt_name"
 PRODUCT_CATEGORY = "subj_root_name"
 PRODUCT_MAIN_CATEGORY = "subj_name"
@@ -78,7 +79,9 @@ PRODUCT_MADE_IN = "made_in"
 
 PRODUCT_PERSONAL_INFO_KEYS = [PRODUCT_DESCRIPTION,
                               PRODUCT_CATEGORY,
-                              PRODUCT_MAIN_CATEGORY
+                              PRODUCT_MAIN_CATEGORY,
+                              PRODUCT_ROOT_ID,
+                              PRODUCT_NAME_KEY
                               ]
 
 FEEDBACKS_KEY = "feedbacks"
