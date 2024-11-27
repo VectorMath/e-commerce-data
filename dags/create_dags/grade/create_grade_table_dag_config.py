@@ -62,6 +62,13 @@ DELETE FROM airflow.xcom
 WHERE dag_id = '{DAG_ID}';
 """
 
+ALTER_FOREIGN_KEY_IN_TABLE_GRADE_QUERY = f"""
+ALTER TABLE {config.GRADE_TABLE}
+ADD CONSTRAINT fk_product_id
+FOREIGN KEY ({postgres_db_constant.PRODUCT_ID})
+REFERENCES public.{config.PRODUCT_TABLE}({postgres_db_constant.PRODUCT_ID})
+ON DELETE CASCADE;
+"""
 
 # Python functions that will be used in callbacks
 def create_dataframe_with_means_values(df: pandas.DataFrame, is_filtered: bool) -> pandas.DataFrame:
