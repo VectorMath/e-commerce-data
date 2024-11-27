@@ -95,6 +95,9 @@ def create_table_grade_in_db(**kwargs):
                                     table_name=config.GRADE_TABLE,
                                     data_type=postgres_db_constant.grade_table_type_dict)
 
+    # Add FK on table
+    client.execute_sql(query=dag_config.ALTER_FOREIGN_KEY_IN_TABLE_GRADE_QUERY, is_return=False)
+
 
 def clear_xcom_cache():
     """Function that delete rows from table 'xcom' in schema 'airflow' in our database.
