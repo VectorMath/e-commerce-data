@@ -37,4 +37,10 @@ CREATE TABLE {config.PRICE_TABLE} AS (
     ) AS sub_query
     WHERE row_num = 1
 );
+
+ALTER TABLE {config.PRICE_TABLE}
+ADD CONSTRAINT fk_product_id
+FOREIGN KEY ({postgres_db_constant.PRODUCT_ID})
+REFERENCES public.{config.PRODUCT_TABLE}({postgres_db_constant.PRODUCT_ID})
+ON DELETE CASCADE;
 """
