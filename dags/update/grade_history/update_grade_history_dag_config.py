@@ -9,6 +9,7 @@ from src.database.postgres import postgres_db_constant
 
 """IDs for DAG and tasks."""
 DAG_ID = "update-grade-history"
+WAIT_FOR_CREATE_TABLE_GRADE_TASK_ID = "wait_for_create_table_grade"
 CREATE_TABLE_GRADE_HISTORY_IF_NOT_EXISTS_TASK_ID = "create_table_grade_history_if_not_exists"
 GET_ACTUAL_GRADES_FROM_TABLE_GRADE_TASK_ID = "get_actual_grades_from_table_grade"
 UPDATE_TABLE_GRADE_HISTORY_TASK_ID = "update_table_grade_history"
@@ -29,12 +30,17 @@ KEY_VALUE_LIST = ', '.join(f"{key} {value}" for key, value in postgres_db_consta
 
 # SQL Queries
 CREATE_TABLE_GRADE_HISTORY_IF_NOT_EXISTS_QUERY: str = f"""
-CREATE TABLE IF NOT EXISTS {config.GRADE_HISTORY_TABLE} ({KEY_VALUE_LIST}, "date" DATE);
+CREATE TABLE IF NOT EXISTS {config.GRADE_HISTORY_TABLE} ({KEY_VALUE_LIST});
+ALTER TABLE {config.GRADE_HISTORY_TABLE}
+ADD CONSTRAINT fk_product_id
+FOREIGN KEY ({postgres_db_constant.PRODUCT_ID})
+REFERENCES public.{config.PRODUCT_TABLE}({postgres_db_constant.PRODUCT_ID})
+ON DELETE CASCADE;
 """
 
 UPDATE_TABLE_GRADE_HISTORY_QUERY: str = f"""
-INSERT INTO {config.GRADE_HISTORY_TABLE} ({', '.join(COLUMN_LIST)}, DATE)
-SELECT {', '.join(COLUMN_LIST)}, CURRENT_DATE
+INSERT INTO {config.GRADE_HISTORY_TABLE} ({', '.join(COLUMN_LIST)})
+SELECT {', '.join(COLUMN_LIST)}
 FROM {config.GRADE_TABLE}
 WHERE NOT EXISTS (
     SELECT 1
