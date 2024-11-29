@@ -30,6 +30,11 @@ KEY_VALUE_LIST = ', '.join(f"{key} {value}" for key, value in postgres_db_consta
 # SQL Queries
 CREATE_TABLE_GRADE_HISTORY_IF_NOT_EXISTS_QUERY: str = f"""
 CREATE TABLE IF NOT EXISTS {config.GRADE_HISTORY_TABLE} ({KEY_VALUE_LIST});
+ALTER TABLE {config.GRADE_HISTORY_TABLE}
+ADD CONSTRAINT fk_product_id
+FOREIGN KEY ({postgres_db_constant.PRODUCT_ID})
+REFERENCES public.{config.PRODUCT_TABLE}({postgres_db_constant.PRODUCT_ID})
+ON DELETE CASCADE;
 """
 
 UPDATE_TABLE_GRADE_HISTORY_QUERY: str = f"""
