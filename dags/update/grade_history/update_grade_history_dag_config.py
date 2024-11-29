@@ -9,6 +9,7 @@ from src.database.postgres import postgres_db_constant
 
 """IDs for DAG and tasks."""
 DAG_ID = "update-grade-history"
+WAIT_FOR_CREATE_TABLE_GRADE_TASK_ID = "wait_for_create_table_grade"
 CREATE_TABLE_GRADE_HISTORY_IF_NOT_EXISTS_TASK_ID = "create_table_grade_history_if_not_exists"
 GET_ACTUAL_GRADES_FROM_TABLE_GRADE_TASK_ID = "get_actual_grades_from_table_grade"
 UPDATE_TABLE_GRADE_HISTORY_TASK_ID = "update_table_grade_history"
