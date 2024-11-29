@@ -3,7 +3,7 @@ File that contain functional of DAG-tasks.
 """
 from src.database.postgres.ClientPostgres import ClientPostgres
 from src.database.postgres.ConnectorPostgres import ConnectorPostgres
-from dags.create_dags.price import create_price_table_dag_config as dag_config
+from dags.create.price import create_price_table_dag_config as dag_config
 
 # Create an instance of the PostgreSQL client
 client = ClientPostgres(ConnectorPostgres())

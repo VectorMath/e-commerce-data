@@ -5,7 +5,7 @@ from src import config
 from src.database.postgres import postgres_db_constant
 from src.database.postgres.ClientPostgres import ClientPostgres
 from src.database.postgres.ConnectorPostgres import ConnectorPostgres
-from dags.create_dags.grade import create_grade_table_dag_config as dag_config
+from dags.create.grade import create_grade_table_dag_config as dag_config
 
 # Create an instance of the PostgreSQL client
 client: ClientPostgres = ClientPostgres(ConnectorPostgres())

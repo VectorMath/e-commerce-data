@@ -18,8 +18,8 @@ For value of limit response variable REQUIRED_COUNT_WORDS_FOR_FILTER in file cre
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 
-from dags.create_dags.grade import create_grade_table_dag_config as dag_config
-from dags.create_dags.grade import create_grade_table_dag_task as dag_task
+from dags.create.grade import create_grade_table_dag_config as dag_config
+from dags.create.grade import create_grade_table_dag_task as dag_task
 
 # Define the DAG
 with DAG(
