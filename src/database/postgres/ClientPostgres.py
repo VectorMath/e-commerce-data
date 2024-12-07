@@ -110,7 +110,8 @@ class ClientPostgres(IClient):
             SELECT 1
             FROM {table_name}
             WHERE {sql_where_cases}
-        );
+        )
+        ON CONFLICT ({postgres_db_constant.PRODUCT_ID}) DO NOTHING;
         '''
         self.get_connector().get_cursor().execute(query)
         self.get_connector().get_connection().commit()
