@@ -71,8 +71,9 @@ def parse_price_history(**context):
 
 def parse_feedbacks(**context):
     product_df = context['ti'].xcom_pull(task_ids=dag_config.PARSE_PRODUCTS_PERSONAL_INFO_TASK_ID,
-                                         key='product_list_df')
+                                         key='product_df')
     feedback_df: pandas.DataFrame = pandas.DataFrame()
+    print(product_df.columns)
 
     for product_id, root_id in zip(product_df[postgres_db_constant.PRODUCT_ID],
                                    product_df[postgres_db_constant.ROOT_ID]):
@@ -87,6 +88,7 @@ def upload_new_data_in_products(**context):
                                          key='product_df')
     client.update_table_in_db_by_df(df=product_df,
                                     table_name=config.PRODUCT_TABLE,
+                                    tmp_table_name=dag_config.TMP_PRODUCT_TABLE_NAME,
                                     data_type=postgres_db_constant.products_table_type_dict)
 
 
@@ -95,6 +97,7 @@ def upload_new_data_in_urls(**context):
                                       key='urls_df')
     client.update_table_in_db_by_df(df=urls_df,
                                     table_name=config.URLS_TABLE,
+                                    tmp_table_name=dag_config.TMP_URLS_TABLE_NAME,
                                     data_type=postgres_db_constant.urls_table_type_dict)
 
 
@@ -103,6 +106,7 @@ def upload_new_data_in_price_history(**context):
                                                key='price_history_df')
     client.update_table_in_db_by_df(df=price_history_df,
                                     table_name=config.PRICE_HISTORY_TABLE,
+                                    tmp_table_name=dag_config.TMP_PRICE_HISTORY_TABLE_NAME,
                                     data_type=postgres_db_constant.price_history_type_dict)
 
 
@@ -111,6 +115,7 @@ def upload_new_data_in_feedbacks(**context):
                                           key='feedback_df')
     client.update_table_in_db_by_df(df=feedback_df,
                                     table_name=config.FEEDBACKS_TABLE,
+                                    tmp_table_name=dag_config.TMP_FEEDBACKS_TABLE_NAME,
                                     data_type=postgres_db_constant.feedbacks_table_type_dict)
 
 
