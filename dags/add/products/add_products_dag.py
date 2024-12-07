@@ -107,18 +107,19 @@ with DAG(
     """
     wait_for_removing_products_sensor >> parse_id_from_product_list_task
     parse_id_from_product_list_task >> parse_urls_of_products_task
-    parse_urls_of_products_task >> [parse_products_personal_info_task,
-                                    parse_price_history_task,
-                                    parse_feedbacks_task]
+    parse_urls_of_products_task >> parse_products_personal_info_task
 
-    [parse_products_personal_info_task,
-     parse_price_history_task,
-     parse_feedbacks_task] >> upload_new_data_in_products_task
+    parse_products_personal_info_task >> [parse_price_history_task, parse_feedbacks_task]
 
-    upload_new_data_in_products_task >> [upload_new_data_in_urls_task,
-                                         upload_new_data_in_price_history_task,
-                                         upload_new_data_in_feedbacks_task]
+    parse_products_personal_info_task >> upload_new_data_in_products_task
 
-    [upload_new_data_in_urls_task,
+    [upload_new_data_in_products_task, parse_price_history_task] >> upload_new_data_in_price_history_task
+
+    [upload_new_data_in_products_task, parse_feedbacks_task] >> upload_new_data_in_feedbacks_task
+
+    [upload_new_data_in_products_task, parse_urls_of_products_task] >> upload_new_data_in_urls_task
+
+    [upload_new_data_in_products_task,
+     upload_new_data_in_urls_task,
      upload_new_data_in_price_history_task,
      upload_new_data_in_feedbacks_task] >> clear_xcom_cache_task >> close_connection_task

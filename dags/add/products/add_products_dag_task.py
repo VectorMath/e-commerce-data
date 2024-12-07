@@ -71,8 +71,9 @@ def parse_price_history(**context):
 
 def parse_feedbacks(**context):
     product_df = context['ti'].xcom_pull(task_ids=dag_config.PARSE_PRODUCTS_PERSONAL_INFO_TASK_ID,
-                                         key='product_list_df')
+                                         key='product_df')
     feedback_df: pandas.DataFrame = pandas.DataFrame()
+    print(product_df.columns)
 
     for product_id, root_id in zip(product_df[postgres_db_constant.PRODUCT_ID],
                                    product_df[postgres_db_constant.ROOT_ID]):
