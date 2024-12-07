@@ -24,7 +24,7 @@ class AsyncRequesterWB:
         :return: URLs of personal info products.
         """
         async with async_playwright() as p:
-            browser: Browser = await p.chromium.launch(executable_path=config.PATH_TO_BROWSER)
+            browser: Browser = await p.chromium.launch()
             page: Page = await browser.new_page()
             urls: list[str] = []
 
