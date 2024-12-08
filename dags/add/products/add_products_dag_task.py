@@ -89,6 +89,7 @@ def upload_new_data_in_products(**context):
     client.update_table_in_db_by_df(df=product_df,
                                     table_name=config.PRODUCT_TABLE,
                                     tmp_table_name=dag_config.TMP_PRODUCT_TABLE_NAME,
+                                    is_main_table=True,
                                     data_type=postgres_db_constant.products_table_type_dict)
 
 
@@ -98,6 +99,7 @@ def upload_new_data_in_urls(**context):
     client.update_table_in_db_by_df(df=urls_df,
                                     table_name=config.URLS_TABLE,
                                     tmp_table_name=dag_config.TMP_URLS_TABLE_NAME,
+                                    is_main_table=False,
                                     data_type=postgres_db_constant.urls_table_type_dict)
 
 
@@ -107,6 +109,7 @@ def upload_new_data_in_price_history(**context):
     client.update_table_in_db_by_df(df=price_history_df,
                                     table_name=config.PRICE_HISTORY_TABLE,
                                     tmp_table_name=dag_config.TMP_PRICE_HISTORY_TABLE_NAME,
+                                    is_main_table=False,
                                     data_type=postgres_db_constant.price_history_type_dict)
 
 
@@ -116,6 +119,7 @@ def upload_new_data_in_feedbacks(**context):
     client.update_table_in_db_by_df(df=feedback_df,
                                     table_name=config.FEEDBACKS_TABLE,
                                     tmp_table_name=dag_config.TMP_FEEDBACKS_TABLE_NAME,
+                                    is_main_table=False,
                                     data_type=postgres_db_constant.feedbacks_table_type_dict)
 
 
