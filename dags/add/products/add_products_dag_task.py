@@ -38,13 +38,12 @@ def parse_urls_of_products(**context):
 
     async_requester: AsyncRequesterWB = AsyncRequesterWB(product_list_df[postgres_db_constant.PRODUCT_ID])
     urls_df: pandas.DataFrame = async_requester.create_table_with_json_urls()
-    print(len(urls_df))
-    print(urls_df)
     context['ti'].xcom_push(key='urls_df', value=urls_df)
 
 
 def parse_products_personal_info(**context):
     """Function  that parse product personal info by link in urls_df.
+    After that push dataframe with urls to XCOM.
     """
     urls_df = context['ti'].xcom_pull(task_ids=dag_config.PARSE_URLS_OF_PRODUCTS_TASK_ID,
                                       key='urls_df')
@@ -59,6 +58,7 @@ def parse_products_personal_info(**context):
 
 def parse_price_history(**context):
     """Function  that parse product price history by link in urls_df.
+    After that push dataframe with urls to XCOM.
     """
     urls_df = context['ti'].xcom_pull(task_ids=dag_config.PARSE_URLS_OF_PRODUCTS_TASK_ID,
                                       key='urls_df')
@@ -73,6 +73,7 @@ def parse_price_history(**context):
 
 def parse_feedbacks(**context):
     """Function  that parse product feedbacks.
+    After that push dataframe with urls to XCOM.
     """
     product_df = context['ti'].xcom_pull(task_ids=dag_config.PARSE_PRODUCTS_PERSONAL_INFO_TASK_ID,
                                          key='product_df')
