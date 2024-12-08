@@ -44,11 +44,13 @@ class IClient:
                                  df: pandas.DataFrame,
                                  table_name: str,
                                  tmp_table_name: str,
+                                 is_main_table: bool,
                                  data_type: dict):
         """Method that update existed table in your database by dataframe from library Pandas
         :param df: Dataframe that contain data for table, that need be updated.
         :param table_name: name of table that you want to update.
         :param tmp_table_name: name of tmp table that will be take data from df.
+        :param is_main_table: bool-value for creating specific query.
         :param data_type: The dictionary with columns and type of that columns in table that need to be updated.
         """
         pass

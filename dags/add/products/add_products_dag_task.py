@@ -38,13 +38,12 @@ def parse_urls_of_products(**context):
 
     async_requester: AsyncRequesterWB = AsyncRequesterWB(product_list_df[postgres_db_constant.PRODUCT_ID])
     urls_df: pandas.DataFrame = async_requester.create_table_with_json_urls()
-    print(len(urls_df))
-    print(urls_df)
     context['ti'].xcom_push(key='urls_df', value=urls_df)
 
 
 def parse_products_personal_info(**context):
     """Function  that parse product personal info by link in urls_df.
+    After that push dataframe with urls to XCOM.
     """
     urls_df = context['ti'].xcom_pull(task_ids=dag_config.PARSE_URLS_OF_PRODUCTS_TASK_ID,
                                       key='urls_df')
@@ -58,6 +57,9 @@ def parse_products_personal_info(**context):
 
 
 def parse_price_history(**context):
+    """Function  that parse product price history by link in urls_df.
+    After that push dataframe with urls to XCOM.
+    """
     urls_df = context['ti'].xcom_pull(task_ids=dag_config.PARSE_URLS_OF_PRODUCTS_TASK_ID,
                                       key='urls_df')
     price_history_df: pandas.DataFrame = pandas.DataFrame()
@@ -70,6 +72,9 @@ def parse_price_history(**context):
 
 
 def parse_feedbacks(**context):
+    """Function  that parse product feedbacks.
+    After that push dataframe with urls to XCOM.
+    """
     product_df = context['ti'].xcom_pull(task_ids=dag_config.PARSE_PRODUCTS_PERSONAL_INFO_TASK_ID,
                                          key='product_df')
     feedback_df: pandas.DataFrame = pandas.DataFrame()
@@ -84,44 +89,60 @@ def parse_feedbacks(**context):
 
 
 def upload_new_data_in_products(**context):
+    """Function that upload new data in table 'products' in our database.
+    """
     product_df = context['ti'].xcom_pull(task_ids=dag_config.PARSE_PRODUCTS_PERSONAL_INFO_TASK_ID,
                                          key='product_df')
     client.update_table_in_db_by_df(df=product_df,
                                     table_name=config.PRODUCT_TABLE,
                                     tmp_table_name=dag_config.TMP_PRODUCT_TABLE_NAME,
+                                    is_main_table=True,
                                     data_type=postgres_db_constant.products_table_type_dict)
 
 
 def upload_new_data_in_urls(**context):
+    """Function that upload new data in table 'urls' in our database.
+    """
     urls_df = context['ti'].xcom_pull(task_ids=dag_config.PARSE_URLS_OF_PRODUCTS_TASK_ID,
                                       key='urls_df')
     client.update_table_in_db_by_df(df=urls_df,
                                     table_name=config.URLS_TABLE,
                                     tmp_table_name=dag_config.TMP_URLS_TABLE_NAME,
+                                    is_main_table=False,
                                     data_type=postgres_db_constant.urls_table_type_dict)
 
 
 def upload_new_data_in_price_history(**context):
+    """Function that upload new data in table 'price_history' in our database.
+    """
     price_history_df = context['ti'].xcom_pull(task_ids=dag_config.PARSE_PRICE_HISTORY_TASK_ID,
                                                key='price_history_df')
     client.update_table_in_db_by_df(df=price_history_df,
                                     table_name=config.PRICE_HISTORY_TABLE,
                                     tmp_table_name=dag_config.TMP_PRICE_HISTORY_TABLE_NAME,
+                                    is_main_table=False,
                                     data_type=postgres_db_constant.price_history_type_dict)
 
 
 def upload_new_data_in_feedbacks(**context):
+    """Function that upload new data in table 'feedbacks' in our database.
+    """
     feedback_df = context['ti'].xcom_pull(task_ids=dag_config.PARSE_FEEDBACKS_TASK_ID,
                                           key='feedback_df')
     client.update_table_in_db_by_df(df=feedback_df,
                                     table_name=config.FEEDBACKS_TABLE,
                                     tmp_table_name=dag_config.TMP_FEEDBACKS_TABLE_NAME,
+                                    is_main_table=False,
                                     data_type=postgres_db_constant.feedbacks_table_type_dict)
 
 
 def clear_xcom_cache():
+    """Function that delete rows from table 'xcom' in schema 'airflow' in our database.
+    """
     client.execute_sql(query=dag_config.DELETE_XCOM_CACHE_QUERY, is_return=False)
 
 
 def close_connection():
+    """Closes the PostgreSQL connection.
+    """
     client.close_connection()

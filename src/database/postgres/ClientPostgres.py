@@ -94,6 +94,7 @@ class ClientPostgres(IClient):
                                  df: pandas.DataFrame,
                                  table_name: str,
                                  tmp_table_name: str,
+                                 is_main_table: bool,
                                  data_type: dict):
         """Realization of method update_table_in_db_by_df from interface IClient.
         """
@@ -103,19 +104,30 @@ class ClientPostgres(IClient):
             [f"{table_name}.{column} = {tmp_table_name}.{column}"
              for column in list(data_type.keys())])
 
-        query = f'''
-        INSERT INTO {table_name} 
-        SELECT * FROM {tmp_table_name}
-        WHERE NOT EXISTS (
-            SELECT 1
-            FROM {table_name}
-            WHERE {sql_where_cases}
-        )
-        ON CONFLICT ({postgres_db_constant.PRODUCT_ID}) DO NOTHING;
-        '''
+        if is_main_table:
+            query = f'''
+            INSERT INTO {table_name} 
+            SELECT * FROM {tmp_table_name}
+            WHERE NOT EXISTS (
+                SELECT 1
+                FROM {table_name}
+                WHERE {sql_where_cases}
+            )
+            ON CONFLICT ({postgres_db_constant.PRODUCT_ID}) DO NOTHING;
+            '''
+        else:
+            query = f'''
+            INSERT INTO {table_name} 
+            SELECT * FROM {tmp_table_name}
+            WHERE NOT EXISTS (
+                SELECT 1
+                FROM {table_name}
+                WHERE {sql_where_cases}
+            );
+            '''
         self.get_connector().get_cursor().execute(query)
         self.get_connector().get_connection().commit()
-        self.execute_sql(f"DROP TABLE IS EXISTS {tmp_table_name}", False)
+        self.execute_sql(f"DROP TABLE IF EXISTS {tmp_table_name}", False)
 
     def get_connector(self) -> ConnectorPostgres:
         """Get-method of field _connector
