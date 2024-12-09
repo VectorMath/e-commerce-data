@@ -1,11 +1,11 @@
 """
-DAG for update price history in our database.
+DAG for updating data in table 'feedbacks', that already exist.
 
 The DAG have the following pipeline:
 - Waiting for execution of DAG that add new products in our database;
-- Getting URLs of price history from products in our database;
-- For every URL parse price history;
-- Upload new data in current table 'price_history' in our database;
+- Getting root and product IDs from products in our database;
+- For every couple root_id and product_id parse feedback;
+- Upload new data in current table 'feedbacks' in our database;
 - Clear XCOM cache;
 - Close connection;
 """
@@ -14,18 +14,16 @@ from airflow.operators.python import PythonOperator
 from airflow.sensors.external_task import ExternalTaskSensor
 
 from dags import global_dag_config
+from dags.update.feedbacks import update_feedbacks_dag_config as dag_config
+from dags.update.feedbacks import update_feedbacks_dag_task as dag_task
 
-from dags.update.price_history import update_price_history_dag_config as dag_config
-from dags.update.price_history import update_price_history_dag_task as dag_task
-
-# Define the DAG
 with DAG(
         dag_id=dag_config.DAG_ID,
         schedule_interval="@daily",
         max_active_runs=1,
         tags=["update"],
         default_args=dag_config.DEFAULT_ARGS
-) as dag:
+):
     """Define sensor
     """
     wait_for_add_products_sensor = ExternalTaskSensor(
@@ -38,15 +36,15 @@ with DAG(
 
     """Define tasks
     """
-    get_price_urls_from_table_urls_task = PythonOperator(
-        task_id=dag_config.GET_PRICE_URLS_FROM_TABLE_URLS_TASK_ID,
-        python_callable=dag_task.get_price_urls_from_table_urls,
+    get_root_and_product_ids_from_table_products_task = PythonOperator(
+        task_id=dag_config.GET_ROOT_AND_PRODUCT_IDS_FROM_TABLE_PRODUCTS_TASK_ID,
+        python_callable=dag_task.get_root_and_product_ids_from_table_products,
         provide_context=True
     )
 
-    find_update_for_prices_task = PythonOperator(
-        task_id=dag_config.FIND_UPDATE_FOR_PRICES_TASK_ID,
-        python_callable=dag_task.find_update_for_prices,
+    find_update_for_feedbacks_task = PythonOperator(
+        task_id=dag_config.FIND_UPDATE_FOR_FEEDBACKS_TASK_ID,
+        python_callable=dag_task.find_update_for_feedbacks,
         provide_context=True
     )
 
@@ -68,8 +66,8 @@ with DAG(
 
     """Setting up a tasks sequence
     """
-    wait_for_add_products_sensor >> get_price_urls_from_table_urls_task
-    get_price_urls_from_table_urls_task >> find_update_for_prices_task
-    find_update_for_prices_task >> upload_updated_data_to_table_task
+    wait_for_add_products_sensor >> get_root_and_product_ids_from_table_products_task
+    get_root_and_product_ids_from_table_products_task >> find_update_for_feedbacks_task
+    find_update_for_feedbacks_task >> upload_updated_data_to_table_task
     upload_updated_data_to_table_task >> clear_xcom_cache_task
     clear_xcom_cache_task >> close_connection_task
