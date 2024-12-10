@@ -108,12 +108,18 @@ class ClientPostgres(IClient):
             query = f'''
             INSERT INTO {table_name} 
             SELECT * FROM {tmp_table_name}
-            WHERE NOT EXISTS (
-                SELECT 1
-                FROM {table_name}
-                WHERE {sql_where_cases}
-            )
-            ON CONFLICT ({postgres_db_constant.PRODUCT_ID}) DO NOTHING;
+            ON CONFLICT ({postgres_db_constant.PRODUCT_ID}) 
+            DO UPDATE SET
+                {postgres_db_constant.PRODUCT_DESCRIPTION} = EXCLUDED.{postgres_db_constant.PRODUCT_DESCRIPTION},
+                {postgres_db_constant.PRODUCT_BRAND_NAME} = EXCLUDED.{postgres_db_constant.PRODUCT_BRAND_NAME},
+                {postgres_db_constant.PRODUCT_MAIN_CATEGORY} = EXCLUDED.{postgres_db_constant.PRODUCT_MAIN_CATEGORY},
+                {postgres_db_constant.PRODUCT_CATEGORY} = EXCLUDED.{postgres_db_constant.PRODUCT_CATEGORY},
+                {postgres_db_constant.PRODUCT_SIZES_TABLE} = EXCLUDED.{postgres_db_constant.PRODUCT_SIZES_TABLE},
+                {postgres_db_constant.PRODUCT_MIN_SIZE} = EXCLUDED.{postgres_db_constant.PRODUCT_MIN_SIZE},
+                {postgres_db_constant.PRODUCT_MAX_SIZE} = EXCLUDED.{postgres_db_constant.PRODUCT_MAX_SIZE},
+                {postgres_db_constant.PRODUCT_COLOR} = EXCLUDED.{postgres_db_constant.PRODUCT_COLOR},
+                {postgres_db_constant.PRODUCT_MADE_IN} = EXCLUDED.{postgres_db_constant.PRODUCT_MADE_IN},
+                {postgres_db_constant.PRODUCT_COMPOSITIONS} = EXCLUDED.{postgres_db_constant.PRODUCT_COMPOSITIONS};
             '''
         else:
             query = f'''
