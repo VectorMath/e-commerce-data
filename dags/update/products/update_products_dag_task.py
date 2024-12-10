@@ -38,6 +38,8 @@ def find_update_for_products(**context):
         product_df = pandas.concat([product_df,
                                     parser.parse_product(product_url)])
 
+    product_df.drop_duplicates(inplace=True)
+
     context['ti'].xcom_push(key="product_df",
                             value=product_df)
 
@@ -46,12 +48,13 @@ def upload_updated_data_to_table(**context):
     """Function that pull dataframe with new data
     and upload them to table 'price_history' in our database.
     """
-    product_df = context['ti'].xcom_pull(key="product_df",
+    product_df: pandas.DataFrame = context['ti'].xcom_pull(key="product_df",
                                          task_ids=dag_config.FIND_UPDATE_FOR_PRODUCTS_TASK_ID)
+
     client.update_table_in_db_by_df(df=product_df,
                                     table_name=config.PRODUCT_TABLE,
                                     tmp_table_name=dag_config.TMP_PRODUCTS_TABLE_NAME,
-                                    is_main_table=False,
+                                    is_main_table=True,
                                     data_type=postgres_db_constant.products_table_type_dict,
                                     )
 
