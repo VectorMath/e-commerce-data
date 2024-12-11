@@ -48,4 +48,4 @@ with DAG(
 
     """Setting up a tasks sequence
     """
-    drop_price_table_task >> create_price_table_task
+    wait_for_update_price_history_sensor >> drop_price_table_task >> create_price_table_task
