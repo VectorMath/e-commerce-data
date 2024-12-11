@@ -13,15 +13,16 @@ The DAG have the following pipeline:
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 
+from dags import global_dag_config, global_dag_task
 from dags.remove.products import remove_products_dag_config as dag_config
 from dags.remove.products import remove_products_dag_task as dag_task
 
 # Define the DAG
 with DAG(
-        dag_id=dag_config.DAG_ID,
-        schedule_interval="@daily",
-        max_active_runs=1,
-        tags=["remove"],
+        dag_id=global_dag_config.REMOVE_PRODUCTS_FROM_DATABASE_DAG_ID,
+        schedule_interval=global_dag_config.DAILY_REMOVE_DAG_PARAMETERS["schedule_interval"],
+        max_active_runs=global_dag_config.DAILY_REMOVE_DAG_PARAMETERS["max_active_runs"],
+        tags=global_dag_config.DAILY_REMOVE_DAG_PARAMETERS["tags"],
         default_args=dag_config.DEFAULT_ARGS
 ) as dag:
     """Define tasks on DAG
@@ -39,16 +40,14 @@ with DAG(
     )
 
     clear_xcom_cache_task = PythonOperator(
-        task_id=dag_config.CLEAR_XCOM_CACHE_TASK_ID,
-        python_callable=dag_task.clear_xcom_cache,
-    )
-
-    close_connection_task = PythonOperator(
-        task_id=dag_config.CLOSE_CONNECTION_TASK_ID,
-        python_callable=dag_task.close_connection,
+        task_id=global_dag_config.CLEAR_XCOM_CACHE_TASK_ID,
+        python_callable=global_dag_task.clear_xcom_cache,
+        op_kwargs={
+            global_dag_config.XCOM_DAG_ID_COLUMN: global_dag_config.REMOVE_PRODUCTS_FROM_DATABASE_DAG_ID
+        }
     )
 
     """Setting up a tasks sequence
     """
     find_products_with_bad_status_code_task >> remove_products_from_database_task
-    remove_products_from_database_task >> clear_xcom_cache_task >> close_connection_task
+    remove_products_from_database_task >> clear_xcom_cache_task

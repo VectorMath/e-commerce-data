@@ -1,19 +1,14 @@
 """
 File that contain functional of DAG-tasks.
 """
+import pandas
 import requests
 import logging
 
+from dags.global_dag_config import client
 from dags.remove.products import remove_products_dag_config as dag_config
 from src import config
-
-from src.database.postgres.ClientPostgres import ClientPostgres
-from src.database.postgres.ConnectorPostgres import ConnectorPostgres
-
 from src.database.postgres import postgres_db_constant
-
-client = ClientPostgres(ConnectorPostgres())
-
 
 def find_products_with_bad_status_code(**context):
     """Function that check status code of product url.
@@ -22,7 +17,7 @@ def find_products_with_bad_status_code(**context):
 
     In the end we push list with invalid urls in XCOM cache.
     """
-    df_urls = client.create_dataframe_by_sql(query=dag_config.SELECT_ALL_DATA_FROM_TABLE_URLS_QUERY)
+    df_urls: pandas.DataFrame = client.create_dataframe_by_sql(query=dag_config.SELECT_ALL_DATA_FROM_TABLE_URLS_QUERY)
     ids_with_bad_status_code: list[int] = []
 
     for product_id, url in zip(df_urls[postgres_db_constant.PRODUCT_ID],
@@ -43,7 +38,7 @@ def remove_products_from_database(**context):
     We take list of product_id from previous task and insert them into our SQL query.
     In case when we don't have ids, function just go to the next task.
     """
-    ids_with_bad_status_code = context['ti'].xcom_pull(
+    ids_with_bad_status_code: list[int] = context['ti'].xcom_pull(
         task_ids=dag_config.FIND_PRODUCTS_WITH_BAD_RESPONSE_CODE_TASK_ID,
         key='ids_with_bad_status_code')
 
@@ -55,15 +50,3 @@ def remove_products_from_database(**context):
         client.execute_sql(query=delete_query, is_return=False)
     else:
         logging.info(msg="Nothing to remove. Go to next task.")
-
-
-def clear_xcom_cache():
-    """Function that delete rows from table 'xcom' in schema 'airflow' in our database.
-    """
-    client.execute_sql(dag_config.DELETE_XCOM_CACHE_QUERY, is_return=False)
-
-
-def close_connection():
-    """Closes the PostgreSQL connection.
-    """
-    client.close_connection()

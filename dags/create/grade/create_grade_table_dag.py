@@ -41,7 +41,6 @@ with DAG(
         timeout=global_dag_config.DEFAULT_SENSORS_PARAMETERS["timeout"]
     )
 
-
     """Define tasks on DAG
     """
     drop_grade_table_task = PythonOperator(
@@ -84,8 +83,13 @@ with DAG(
         provide_context=True
     )
 
-    clear_xcom_cache_task = PythonOperator(task_id=global_dag_config.CLEAR_XCOM_CACHE_TASK_ID,
-                                           python_callable=global_dag_task.clear_xcom_cache)
+    clear_xcom_cache_task = PythonOperator(
+        task_id=global_dag_config.CLEAR_XCOM_CACHE_TASK_ID,
+        python_callable=global_dag_task.clear_xcom_cache,
+        op_kwargs={
+            global_dag_config.XCOM_DAG_ID_COLUMN: global_dag_config.CREATE_GRADE_TABLE_DAG_ID
+        }
+    )
 
     """Setting up a tasks sequence
     """
