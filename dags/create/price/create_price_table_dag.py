@@ -10,12 +10,14 @@ The DAG have the following pipeline:
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 
+from dags import global_dag_config
+
 from dags.create.price import create_price_table_dag_config as dag_config
 from dags.create.price import create_price_table_dag_task as dag_task
 
 # Define the DAG
 with DAG(
-        dag_id=dag_config.DAG_ID,
+        dag_id=global_dag_config.CREATE_PRICE_TABLE_DAG_ID,
         schedule_interval="@daily",
         max_active_runs=1,
         tags=["create"],

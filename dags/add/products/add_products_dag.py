@@ -15,16 +15,17 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.sensors.external_task import ExternalTaskSensor
 
-from dags import global_dag_config
+from dags import global_dag_config, global_dag_task
 from dags.add.products import add_products_dag_config as dag_config
 from dags.add.products import add_products_dag_task as dag_task
 
-# Define the DAG
+"""Define the DAG
+"""
 with DAG(
-        dag_id=dag_config.DAG_ID,
-        schedule_interval="@daily",
-        max_active_runs=1,
-        tags=["add"],
+        dag_id=global_dag_config.ADD_PRODUCT_IN_TABLE_DAG_ID,
+        schedule_interval=global_dag_config.DAILY_ADD_DAG_PARAMETERS["schedule_interval"],
+        max_active_runs=global_dag_config.DAILY_ADD_DAG_PARAMETERS["max_active_runs"],
+        tags=global_dag_config.DAILY_ADD_DAG_PARAMETERS["tags"],
         default_args=dag_config.DEFAULT_ARGS
 ) as dag:
     """Define sensor, that wait complete
@@ -32,9 +33,9 @@ with DAG(
     wait_for_removing_products_sensor = ExternalTaskSensor(
         task_id=dag_config.WAIT_FOR_REMOVING_PRODUCTS_SENSOR_ID,
         external_dag_id=global_dag_config.REMOVE_PRODUCTS_FROM_DATABASE_DAG_ID,
-        external_task_id=None,
-        poke_interval=60,
-        timeout=600
+        external_task_id=global_dag_config.DEFAULT_SENSORS_PARAMETERS["external_task_id"],
+        poke_interval=global_dag_config.DEFAULT_SENSORS_PARAMETERS["poke_interval"],
+        timeout=global_dag_config.DEFAULT_SENSORS_PARAMETERS["timeout"]
     )
 
     """Define tasks on DAG
@@ -94,13 +95,11 @@ with DAG(
     )
 
     clear_xcom_cache_task = PythonOperator(
-        task_id=dag_config.CLEAR_XCOM_CACHE_TASK_ID,
-        python_callable=dag_task.clear_xcom_cache
-    )
-
-    close_connection_task = PythonOperator(
-        task_id=dag_config.CLOSE_CONNECTION_TASK_ID,
-        python_callable=dag_task.close_connection
+        task_id=global_dag_config.CLEAR_XCOM_CACHE_TASK_ID,
+        python_callable=global_dag_task.clear_xcom_cache,
+        op_kwargs={
+            global_dag_config.XCOM_DAG_ID_COLUMN: global_dag_config.ADD_PRODUCT_IN_TABLE_DAG_ID
+        }
     )
 
     """Setting up a tasks sequence
@@ -111,15 +110,12 @@ with DAG(
 
     parse_products_personal_info_task >> [parse_price_history_task, parse_feedbacks_task]
 
-    parse_products_personal_info_task >> upload_new_data_in_products_task
+    [parse_price_history_task, parse_feedbacks_task] >> upload_new_data_in_products_task
 
-    [upload_new_data_in_products_task, parse_price_history_task] >> upload_new_data_in_price_history_task
+    upload_new_data_in_products_task >> [upload_new_data_in_price_history_task,
+                                         upload_new_data_in_feedbacks_task,
+                                         upload_new_data_in_urls_task]
 
-    [upload_new_data_in_products_task, parse_feedbacks_task] >> upload_new_data_in_feedbacks_task
-
-    [upload_new_data_in_products_task, parse_urls_of_products_task] >> upload_new_data_in_urls_task
-
-    [upload_new_data_in_products_task,
-     upload_new_data_in_urls_task,
-     upload_new_data_in_price_history_task,
-     upload_new_data_in_feedbacks_task] >> clear_xcom_cache_task >> close_connection_task
+    [upload_new_data_in_price_history_task,
+     upload_new_data_in_feedbacks_task,
+     upload_new_data_in_urls_task] >> clear_xcom_cache_task

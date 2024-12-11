@@ -1,20 +1,76 @@
 """File with global constant values for DAGs.
 """
-from dags.create.price import create_price_table_dag_config as price_config
-from dags.create.grade import create_grade_table_dag_config as grade_config
-from dags.remove.products import remove_products_dag_config as remove_products_config
-from dags.update.grade_history import update_grade_history_dag_config as grade_history_config
-from dags.update.price_history import update_price_history_dag_config as update_price_history_config
-from dags.update.feedbacks import update_feedbacks_dag_config as update_feedbacks_config
-from dags.update.products import update_products_dag_config as update_products_config
-from dags.add.products import add_products_dag_config as add_products_config
+from datetime import datetime
 
-# DAGs IDs.
-CREATE_PRICE_TABLE_DAG_ID = price_config.DAG_ID
-CREATE_GRADE_TABLE_DAG_ID = grade_config.DAG_ID
-UPDATE_GRADE_HISTORY_TABLE_DAG_ID = grade_history_config.DAG_ID
-UPDATE_PRICE_HISTORY_TABLE_DAG_ID = update_price_history_config.DAG_ID
-UPDATE_FEEDBACKS_TABLE_DAG_ID = update_feedbacks_config.DAG_ID
-UPDATE_PRODUCTS_TABLE_DAG_ID = update_products_config.DAG_ID
-ADD_PRODUCT_IN_TABLE_DAG_ID = add_products_config.DAG_ID
-REMOVE_PRODUCTS_FROM_DATABASE_DAG_ID = remove_products_config.DAG_ID
+from src.database.IClient import IClient
+from src.database.postgres.ClientPostgres import ClientPostgres
+from src.database.postgres.ConnectorPostgres import ConnectorPostgres
+from src.parser.IParser import IParser
+from src.parser.WB.ParserWB import ParserWB
+
+# Instance of IClient.
+client: IClient = ClientPostgres(ConnectorPostgres())
+
+# Instance of IParser.
+parser: IParser = ParserWB()
+
+# Current date in format YYYY_MM_DD.
+CURRENT_DATE_YYYY_MM_DD: str = datetime.now().strftime('%Y_%m_%d')
+
+# Airflow schema name in database.
+AIRFLOW_DB_SCHEMA: str = "airflow"
+
+"""XCOM constants.
+"""
+XCOM_TABLE_NAME: str = "xcom"
+XCOM_DAG_ID_COLUMN: str = "dag_id"
+
+"""DAGs IDs.
+"""
+CREATE_PRICE_TABLE_DAG_ID: str = "create-price-table"
+CREATE_GRADE_TABLE_DAG_ID: str = "create-grade-table"
+UPDATE_GRADE_HISTORY_TABLE_DAG_ID: str = "update-grade-history"
+UPDATE_PRICE_HISTORY_TABLE_DAG_ID: str = "update-price-history"
+UPDATE_FEEDBACKS_TABLE_DAG_ID: str = "update-feedbacks"
+UPDATE_PRODUCTS_TABLE_DAG_ID: str = "update-products"
+ADD_PRODUCT_IN_TABLE_DAG_ID: str = "add-products"
+REMOVE_PRODUCTS_FROM_DATABASE_DAG_ID: str = "remove-products"
+
+"""Task IDs
+"""
+CLEAR_XCOM_CACHE_TASK_ID: str = "clear_xcom_cache"
+CLOSE_CONNECTION_TASK_ID: str = "close_connection"
+
+"""Daily DAGs parameters
+"""
+DAILY_ADD_DAG_PARAMETERS: dict = {
+    "schedule_interval": "@daily",
+    "max_active_runs": 1,
+    "tags": ["add"]
+}
+
+DAILY_CREATE_DAG_PARAMETERS: dict = {
+    "schedule_interval": "@daily",
+    "max_active_runs": 1,
+    "tags": ["create"]
+}
+
+DAILY_REMOVE_DAG_PARAMETERS: dict = {
+    "schedule_interval": "@daily",
+    "max_active_runs": 1,
+    "tags": ["remove"]
+}
+
+DAILY_UPDATE_DAG_PARAMETERS: dict = {
+    "schedule_interval": "@daily",
+    "max_active_runs": 1,
+    "tags": ["update"]
+}
+
+"""Sensors parameters
+"""
+DEFAULT_SENSORS_PARAMETERS: dict = {
+    "external_task_id": None,
+    "poke_interval": 60,  # 1 minute
+    "timeout": 60 * 60,  # 1 hour
+}
