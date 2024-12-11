@@ -8,12 +8,11 @@ from src import config
 from src.database.postgres import postgres_db_constant
 
 """IDs for DAG and tasks."""
-DAG_ID = "update-grade-history"
-WAIT_FOR_CREATE_TABLE_GRADE_TASK_ID = "wait_for_create_table_grade"
-CREATE_TABLE_GRADE_HISTORY_IF_NOT_EXISTS_TASK_ID = "create_table_grade_history_if_not_exists"
-GET_ACTUAL_GRADES_FROM_TABLE_GRADE_TASK_ID = "get_actual_grades_from_table_grade"
-UPDATE_TABLE_GRADE_HISTORY_TASK_ID = "update_table_grade_history"
-CLOSE_CONNECTION_TASK_ID = "close_connection"
+WAIT_FOR_CREATE_TABLE_GRADE_TASK_ID: str = "wait_for_create_table_grade"
+CREATE_TABLE_GRADE_HISTORY_IF_NOT_EXISTS_TASK_ID: str = "create_table_grade_history_if_not_exists"
+GET_ACTUAL_GRADES_FROM_TABLE_GRADE_TASK_ID: str = "get_actual_grades_from_table_grade"
+UPDATE_TABLE_GRADE_HISTORY_TASK_ID: str = "update_table_grade_history"
+CLOSE_CONNECTION_TASK_ID: str = "close_connection"
 
 # Default arguments for DAG
 DEFAULT_ARGS: dict = {
@@ -26,7 +25,7 @@ DEFAULT_ARGS: dict = {
 COLUMN_LIST: list[str] = list(postgres_db_constant.grade_table_type_dict.keys())
 
 # List with key and values of table 'grade'
-KEY_VALUE_LIST = ', '.join(f"{key} {value}" for key, value in postgres_db_constant.grade_table_type_dict.items())
+KEY_VALUE_LIST: str = ', '.join(f"{key} {value}" for key, value in postgres_db_constant.grade_table_type_dict.items())
 
 # SQL Queries
 CREATE_TABLE_GRADE_HISTORY_IF_NOT_EXISTS_QUERY: str = f"""
