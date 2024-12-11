@@ -17,13 +17,13 @@ from dags.update.grade_history import update_grade_history_dag_config as dag_con
 from dags.update.grade_history import update_grade_history_dag_task as dag_task
 
 # Define the DAG
-with (DAG(
+with DAG(
         dag_id=global_dag_config.UPDATE_GRADE_HISTORY_TABLE_DAG_ID,
         schedule_interval=global_dag_config.DAILY_UPDATE_DAG_PARAMETERS["schedule_interval"],
         max_active_runs=global_dag_config.DAILY_UPDATE_DAG_PARAMETERS["max_active_runs"],
         tags=global_dag_config.DAILY_UPDATE_DAG_PARAMETERS["tags"],
         default_args=dag_config.DEFAULT_ARGS
-) as dag):
+) as dag:
     """Define sensor, that wait complete
     """
     wait_for_create_table_grade_dag_sensor = ExternalTaskSensor(
