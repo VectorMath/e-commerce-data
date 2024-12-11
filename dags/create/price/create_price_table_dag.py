@@ -9,6 +9,7 @@ The DAG have the following pipeline:
 """
 from airflow import DAG
 from airflow.operators.python import PythonOperator
+from airflow.sensors.external_task import ExternalTaskSensor
 
 from dags import global_dag_config
 
@@ -23,6 +24,16 @@ with DAG(
         tags=["create"],
         default_args=dag_config.DEFAULT_ARGS
 ) as dag:
+    """Define sensor.
+    """
+    wait_for_update_price_history_sensor = ExternalTaskSensor(
+        task_id=dag_config.WAIT_FOR_UPDATE_PRICE_HISTORY_SENSOR_ID,
+        external_dag_id=global_dag_config.UPDATE_PRICE_HISTORY_TABLE_DAG_ID,
+        external_task_id=global_dag_config.DEFAULT_SENSORS_PARAMETERS["external_task_id"],
+        poke_interval=global_dag_config.DEFAULT_SENSORS_PARAMETERS["poke_interval"],
+        timeout=global_dag_config.DEFAULT_SENSORS_PARAMETERS["timeout"]
+    )
+
     """Define tasks on DAG
     """
     drop_price_table_task = PythonOperator(

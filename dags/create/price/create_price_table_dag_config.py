@@ -9,6 +9,7 @@ from src.database.postgres import postgres_db_constant
 
 """IDs for DAG and tasks."""
 DAG_ID = "create-price-table"
+WAIT_FOR_UPDATE_PRICE_HISTORY_SENSOR_ID = "wait_for_update_price_history"
 DROP_TABLE_PRICE_TASK_ID = "drop_table_price"
 CREATE_TABLE_PRICE_TASK_ID = "create_table_price"
 CLOSE_CONNECTION_TASK_ID = "close_connection"
