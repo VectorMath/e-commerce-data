@@ -19,16 +19,16 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.sensors.external_task import ExternalTaskSensor
 
-from dags import global_dag_config
+from dags import global_dag_config, global_dag_task
 from dags.create.grade import create_grade_table_dag_config as dag_config
 from dags.create.grade import create_grade_table_dag_task as dag_task
 
 # Define the DAG
 with DAG(
-        dag_id=dag_config.DAG_ID,
-        schedule_interval="@daily",
-        max_active_runs=1,
-        tags=["create"],
+        dag_id=global_dag_config.CREATE_GRADE_TABLE_DAG_ID,
+        schedule_interval=global_dag_config.DAILY_CREATE_DAG_PARAMETERS["schedule_interval"],
+        max_active_runs=global_dag_config.DAILY_CREATE_DAG_PARAMETERS["max_active_runs"],
+        tags=global_dag_config.DAILY_CREATE_DAG_PARAMETERS["tags"],
         default_args=dag_config.DEFAULT_ARGS
 ) as dag:
     """Define sensor.
@@ -84,13 +84,8 @@ with DAG(
         provide_context=True
     )
 
-    close_connection_task = PythonOperator(
-        task_id=dag_config.CLOSE_CONNECTION_TASK_ID,
-        python_callable=dag_task.close_postgres_connection
-    )
-
-    clear_xcom_cache_task = PythonOperator(task_id=dag_config.CLEAR_XCOM_CACHE_TASK_ID,
-                                           python_callable=dag_task.clear_xcom_cache)
+    clear_xcom_cache_task = PythonOperator(task_id=global_dag_config.CLEAR_XCOM_CACHE_TASK_ID,
+                                           python_callable=global_dag_task.clear_xcom_cache)
 
     """Setting up a tasks sequence
     """
@@ -112,4 +107,4 @@ with DAG(
 
     create_final_dataframe_task >> create_table_grade_in_db_task
 
-    create_table_grade_in_db_task >> clear_xcom_cache_task >> close_connection_task
+    create_table_grade_in_db_task >> clear_xcom_cache_task

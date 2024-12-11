@@ -11,17 +11,14 @@ from src.database.postgres import postgres_db_constant
 from src import config
 
 """IDs for DAG and tasks."""
-DAG_ID = "create-grade-table"
-WAIT_FOR_UPDATE_FEEDBACKS_SENSOR_ID = "wait_for_update_feedbacks"
-DROP_TABLE_GRADE_TASK_ID = "drop_table_grade"
-GET_NON_FILTERED_GRADES_FROM_TABLE_FEEDBACKS_TASK_ID = "get_non_filtered_grades_from_table_feedbacks"
-GET_FILTERED_GRADES_FROM_TABLE_FEEDBACKS_TASK_ID = "get_filtered_grades_from_table_feedbacks"
-CALCULATE_MEANS_FOR_NON_FILTERED_GRADES_TASK_ID = "calculate_means_for_non_filtered_grades"
-CALCULATE_MEANS_FOR_FILTERED_GRADES_TASK_ID = "calculate_means_for_filtered_grades"
-CREATE_FINAL_DATAFRAME_TASK_ID = "create_final_dataframe"
-CREATE_TABLE_GRADE_IN_DATABASE_TASK_ID = "create_table_grade_in_database"
-CLOSE_CONNECTION_TASK_ID = "close_connection"
-CLEAR_XCOM_CACHE_TASK_ID = "clear_xcom_cache"
+WAIT_FOR_UPDATE_FEEDBACKS_SENSOR_ID: str = "wait_for_update_feedbacks"
+DROP_TABLE_GRADE_TASK_ID: str = "drop_table_grade"
+GET_NON_FILTERED_GRADES_FROM_TABLE_FEEDBACKS_TASK_ID: str = "get_non_filtered_grades_from_table_feedbacks"
+GET_FILTERED_GRADES_FROM_TABLE_FEEDBACKS_TASK_ID: str = "get_filtered_grades_from_table_feedbacks"
+CALCULATE_MEANS_FOR_NON_FILTERED_GRADES_TASK_ID: str = "calculate_means_for_non_filtered_grades"
+CALCULATE_MEANS_FOR_FILTERED_GRADES_TASK_ID: str = "calculate_means_for_filtered_grades"
+CREATE_FINAL_DATAFRAME_TASK_ID: str = "create_final_dataframe"
+CREATE_TABLE_GRADE_IN_DATABASE_TASK_ID: str = "create_table_grade_in_database"
 
 # Default arguments for the DAG
 DEFAULT_ARGS: dict = {
@@ -34,7 +31,7 @@ DEFAULT_ARGS: dict = {
 REQUIRED_COUNT_WORDS_FOR_FILTER: int = 10
 
 # Current date
-CURRENT_DATE = datetime.now().strftime("%Y-%m-%d")
+CURRENT_DATE: str = datetime.now().strftime("%Y-%m-%d")
 
 # SQL queries
 DROP_GRADE_TABLE_QUERY: str = f"""DROP TABLE IF EXISTS {config.GRADE_TABLE};"""
@@ -58,12 +55,7 @@ WHERE (
 ;
 """
 
-DELETE_XCOM_CACHE_QUERY: str = f"""
-DELETE FROM airflow.xcom
-WHERE dag_id = '{DAG_ID}';
-"""
-
-ALTER_FOREIGN_KEY_IN_TABLE_GRADE_QUERY = f"""
+ALTER_FOREIGN_KEY_IN_TABLE_GRADE_QUERY: str = f"""
 ALTER TABLE {config.GRADE_TABLE}
 ADD CONSTRAINT fk_product_id
 FOREIGN KEY ({postgres_db_constant.PRODUCT_ID})
@@ -89,9 +81,9 @@ def create_dataframe_with_means_values(df: pandas.DataFrame, is_filtered: bool) 
     mode_grade_col: str = postgres_db_constant.MODE_GRADE
 
     if is_filtered:
-        mean_grade_col = postgres_db_constant.MEAN_GRADE_FILTERED
-        median_grade_col = postgres_db_constant.MEDIAN_GRADE_FILTERED
-        mode_grade_col = postgres_db_constant.MODE_GRADE_FILTERED
+        mean_grade_col: str = postgres_db_constant.MEAN_GRADE_FILTERED
+        median_grade_col: str = postgres_db_constant.MEDIAN_GRADE_FILTERED
+        mode_grade_col: str = postgres_db_constant.MODE_GRADE_FILTERED
 
     mean_df: pandas.DataFrame = df.groupby(postgres_db_constant.PRODUCT_ID).mean().rename(
         columns={postgres_db_constant.GRADE: mean_grade_col})
