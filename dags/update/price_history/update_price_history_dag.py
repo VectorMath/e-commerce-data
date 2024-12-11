@@ -7,23 +7,21 @@ The DAG have the following pipeline:
 - For every URL parse price history;
 - Upload new data in current table 'price_history' in our database;
 - Clear XCOM cache;
-- Close connection;
 """
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.sensors.external_task import ExternalTaskSensor
 
-from dags import global_dag_config
-
+from dags import global_dag_config, global_dag_task
 from dags.update.price_history import update_price_history_dag_config as dag_config
 from dags.update.price_history import update_price_history_dag_task as dag_task
 
 # Define the DAG
 with DAG(
-        dag_id=dag_config.DAG_ID,
-        schedule_interval="@daily",
-        max_active_runs=1,
-        tags=["update"],
+        dag_id=global_dag_config.UPDATE_PRICE_HISTORY_TABLE_DAG_ID,
+        schedule_interval=global_dag_config.DAILY_UPDATE_DAG_PARAMETERS["schedule_interval"],
+        max_active_runs=global_dag_config.DAILY_UPDATE_DAG_PARAMETERS["max_active_runs"],
+        tags=global_dag_config.DAILY_UPDATE_DAG_PARAMETERS["tags"],
         default_args=dag_config.DEFAULT_ARGS
 ) as dag:
     """Define sensor
@@ -31,9 +29,9 @@ with DAG(
     wait_for_add_products_sensor = ExternalTaskSensor(
         task_id=dag_config.WAIT_FOR_ADD_PRODUCTS_SENSOR_ID,
         external_dag_id=global_dag_config.ADD_PRODUCT_IN_TABLE_DAG_ID,
-        external_task_id=None,
-        poke_interval=60,
-        timeout=600
+        external_task_id=global_dag_config.DEFAULT_SENSORS_PARAMETERS["external_task_id"],
+        poke_interval=global_dag_config.DEFAULT_SENSORS_PARAMETERS["poke_interval"],
+        timeout=global_dag_config.DEFAULT_SENSORS_PARAMETERS["timeout"]
     )
 
     """Define tasks
@@ -57,13 +55,11 @@ with DAG(
     )
 
     clear_xcom_cache_task = PythonOperator(
-        task_id=dag_config.CLEAR_XCOM_CACHE_TASK_ID,
-        python_callable=dag_task.clear_xcom_cache
-    )
-
-    close_connection_task = PythonOperator(
-        task_id=dag_config.CLOSE_CONNECTION_TASK_ID,
-        python_callable=dag_task.close_connection
+        task_id=global_dag_config.CLEAR_XCOM_CACHE_TASK_ID,
+        python_callable=global_dag_task.clear_xcom_cache,
+        op_kwargs={
+            global_dag_config.XCOM_DAG_ID_COLUMN: global_dag_config.UPDATE_PRICE_HISTORY_TABLE_DAG_ID
+        }
     )
 
     """Setting up a tasks sequence
@@ -72,4 +68,3 @@ with DAG(
     get_price_urls_from_table_urls_task >> find_update_for_prices_task
     find_update_for_prices_task >> upload_updated_data_to_table_task
     upload_updated_data_to_table_task >> clear_xcom_cache_task
-    clear_xcom_cache_task >> close_connection_task
