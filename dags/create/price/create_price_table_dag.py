@@ -46,11 +46,6 @@ with DAG(
         python_callable=dag_task.create_price_table_from_history
     )
 
-    close_connection_task = PythonOperator(
-        task_id=dag_config.CLOSE_CONNECTION_TASK_ID,
-        python_callable=dag_task.close_postgres_connection
-    )
-
     """Setting up a tasks sequence
     """
-    drop_price_table_task >> create_price_table_task >> close_connection_task
+    drop_price_table_task >> create_price_table_task
