@@ -17,7 +17,9 @@ For value of limit response variable REQUIRED_COUNT_WORDS_FOR_FILTER in file cre
 """
 from airflow import DAG
 from airflow.operators.python import PythonOperator
+from airflow.sensors.external_task import ExternalTaskSensor
 
+from dags import global_dag_config
 from dags.create.grade import create_grade_table_dag_config as dag_config
 from dags.create.grade import create_grade_table_dag_task as dag_task
 
@@ -29,6 +31,17 @@ with DAG(
         tags=["create"],
         default_args=dag_config.DEFAULT_ARGS
 ) as dag:
+    """Define sensor.
+    """
+    wait_for_update_feedbacks_sensor = ExternalTaskSensor(
+        task_id=dag_config.WAIT_FOR_UPDATE_FEEDBACKS_SENSOR_ID,
+        external_dag_id=global_dag_config.UPDATE_FEEDBACKS_TABLE_DAG_ID,
+        external_task_id=global_dag_config.DEFAULT_SENSORS_PARAMETERS["external_task_id"],
+        poke_interval=global_dag_config.DEFAULT_SENSORS_PARAMETERS["poke_interval"],
+        timeout=global_dag_config.DEFAULT_SENSORS_PARAMETERS["timeout"]
+    )
+
+
     """Define tasks on DAG
     """
     drop_grade_table_task = PythonOperator(
@@ -81,6 +94,8 @@ with DAG(
 
     """Setting up a tasks sequence
     """
+    wait_for_update_feedbacks_sensor >> drop_grade_table_task
+
     drop_grade_table_task >> [
         get_non_filtered_grades_from_table_feedbacks_task,
         get_filtered_grades_from_table_feedback_task

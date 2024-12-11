@@ -12,6 +12,7 @@ from src import config
 
 """IDs for DAG and tasks."""
 DAG_ID = "create-grade-table"
+WAIT_FOR_UPDATE_FEEDBACKS_SENSOR_ID = "wait_for_update_feedbacks"
 DROP_TABLE_GRADE_TASK_ID = "drop_table_grade"
 GET_NON_FILTERED_GRADES_FROM_TABLE_FEEDBACKS_TASK_ID = "get_non_filtered_grades_from_table_feedbacks"
 GET_FILTERED_GRADES_FROM_TABLE_FEEDBACKS_TASK_ID = "get_filtered_grades_from_table_feedbacks"
