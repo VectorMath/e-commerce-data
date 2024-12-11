@@ -13,15 +13,15 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.sensors.external_task import ExternalTaskSensor
 
-from dags import global_dag_config
+from dags import global_dag_config, global_dag_task
 from dags.update.feedbacks import update_feedbacks_dag_config as dag_config
 from dags.update.feedbacks import update_feedbacks_dag_task as dag_task
 
 with DAG(
-        dag_id=dag_config.DAG_ID,
-        schedule_interval="@daily",
-        max_active_runs=1,
-        tags=["update"],
+        dag_id=global_dag_config.UPDATE_FEEDBACKS_TABLE_DAG_ID,
+        schedule_interval=global_dag_config.DAILY_UPDATE_DAG_PARAMETERS["schedule_interval"],
+        max_active_runs=global_dag_config.DAILY_UPDATE_DAG_PARAMETERS["max_active_runs"],
+        tags=global_dag_config.DAILY_UPDATE_DAG_PARAMETERS["tags"],
         default_args=dag_config.DEFAULT_ARGS
 ):
     """Define sensor
@@ -29,9 +29,9 @@ with DAG(
     wait_for_add_products_sensor = ExternalTaskSensor(
         task_id=dag_config.WAIT_FOR_ADD_PRODUCTS_SENSOR_ID,
         external_dag_id=global_dag_config.ADD_PRODUCT_IN_TABLE_DAG_ID,
-        external_task_id=None,
-        poke_interval=60,
-        timeout=600
+        external_task_id=global_dag_config.DEFAULT_SENSORS_PARAMETERS["external_task_id"],
+        poke_interval=global_dag_config.DEFAULT_SENSORS_PARAMETERS["poke_interval"],
+        timeout=global_dag_config.DEFAULT_SENSORS_PARAMETERS["timeout"]
     )
 
     """Define tasks
@@ -55,13 +55,11 @@ with DAG(
     )
 
     clear_xcom_cache_task = PythonOperator(
-        task_id=dag_config.CLEAR_XCOM_CACHE_TASK_ID,
-        python_callable=dag_task.clear_xcom_cache
-    )
-
-    close_connection_task = PythonOperator(
-        task_id=dag_config.CLOSE_CONNECTION_TASK_ID,
-        python_callable=dag_task.close_connection
+        task_id=global_dag_config.CLEAR_XCOM_CACHE_TASK_ID,
+        python_callable=global_dag_task.clear_xcom_cache,
+        op_kwargs={
+            global_dag_config.XCOM_DAG_ID_COLUMN: global_dag_config.UPDATE_FEEDBACKS_TABLE_DAG_ID
+        }
     )
 
     """Setting up a tasks sequence
@@ -70,4 +68,3 @@ with DAG(
     get_root_and_product_ids_from_table_products_task >> find_update_for_feedbacks_task
     find_update_for_feedbacks_task >> upload_updated_data_to_table_task
     upload_updated_data_to_table_task >> clear_xcom_cache_task
-    clear_xcom_cache_task >> close_connection_task
