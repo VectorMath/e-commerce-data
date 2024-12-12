@@ -16,6 +16,9 @@ from dags import global_dag_config, global_dag_task
 from dags.update.price_history import update_price_history_dag_config as dag_config
 from dags.update.price_history import update_price_history_dag_task as dag_task
 
+from src import config
+from src.database.postgres import postgres_db_constant
+
 # Define the DAG
 with DAG(
         dag_id=global_dag_config.UPDATE_PRICE_HISTORY_TABLE_DAG_ID,
@@ -62,9 +65,18 @@ with DAG(
         }
     )
 
+    sort_rows_in_table_task = PythonOperator(
+        task_id=global_dag_config.SORT_DATA_IN_TABLE_TASK_ID,
+        python_callable=global_dag_task.sort_data_in_table,
+        op_kwargs={
+            "table_name": config.PRICE_HISTORY_TABLE,
+            "index": postgres_db_constant.INDEX_PRICE_HISTORY
+        }
+    )
+
     """Setting up a tasks sequence
     """
     wait_for_add_products_sensor >> get_price_urls_from_table_urls_task
     get_price_urls_from_table_urls_task >> find_update_for_prices_task
     find_update_for_prices_task >> upload_updated_data_to_table_task
-    upload_updated_data_to_table_task >> clear_xcom_cache_task
+    upload_updated_data_to_table_task >> sort_rows_in_table_task >> clear_xcom_cache_task

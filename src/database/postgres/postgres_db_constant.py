@@ -1,5 +1,11 @@
 TMP_TABLE = "tmp_table"
 
+INDEX_PRODUCTS = "idx_products"
+INDEX_URLS = "idx_urls"
+INDEX_PRICE_HISTORY = "idx_ph"
+INDEX_GRADE_HISTORY = "idx_gh"
+INDEX_FEEDBACKS = "idx_feedbacks"
+
 ROOT_ID = "root_id"
 PRODUCT_ID = "product_id"
 DATE = "date"
