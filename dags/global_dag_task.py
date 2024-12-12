@@ -1,7 +1,19 @@
 """
 File that contain functional of DAG-tasks who using in few DAGs.
 """
+
 from dags import global_dag_config
+
+
+def sort_data_in_table(table_name: str, index: str):
+    """Function that will sort rows in table.
+    :param table_name: name of table that rows need to be sorted.
+    :param index: Name of index in SQL.
+    """
+    query: str = f"""
+    CLUSTER {table_name} USING {index};
+    """
+    global_dag_config.client.execute_sql(query=query, is_return=False)
 
 
 def clear_xcom_cache(dag_id: str):

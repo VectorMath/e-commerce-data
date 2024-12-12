@@ -40,6 +40,7 @@ REMOVE_PRODUCTS_FROM_DATABASE_DAG_ID: str = "remove-products"
 """
 CLEAR_XCOM_CACHE_TASK_ID: str = "clear_xcom_cache"
 CLOSE_CONNECTION_TASK_ID: str = "close_connection"
+SORT_DATA_IN_TABLE_TASK_ID: str = "sort_data_in_table"
 
 """Daily DAGs parameters
 """
