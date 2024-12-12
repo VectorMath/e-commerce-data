@@ -4,6 +4,8 @@ for DAG-files 'add_products_dag.py' and 'add_products_dag_task.py'
 """
 from airflow.utils.dates import days_ago
 
+from src import config
+
 from dags import global_dag_config
 
 # Default arguments for the DAG
@@ -27,6 +29,11 @@ UPLOAD_NEW_DATA_IN_PRODUCTS_TASK_ID: str = "upload_new_data_in_products"
 UPLOAD_NEW_DATA_IN_URLS_TASK_ID: str = "upload_new_data_in_urls"
 UPLOAD_NEW_DATA_IN_PRICE_HISTORY_TASK_ID: str = "upload_new_data_in_price_history"
 UPLOAD_NEW_DATA_IN_FEEDBACKS_TASK_ID: str = "upload_new_data_in_feedbacks"
+
+SORT_DATA_IN_PRODUCTS_TASK_ID: str = global_dag_config.SORT_DATA_IN_TABLE_TASK_ID+f"_{config.PRODUCT_TABLE}"
+SORT_DATA_IN_PRICE_HISTORY_TASK_ID: str = global_dag_config.SORT_DATA_IN_TABLE_TASK_ID+f"_{config.PRICE_HISTORY_TABLE}"
+SORT_DATA_IN_URLS_TASK_ID: str = global_dag_config.SORT_DATA_IN_TABLE_TASK_ID+f"_{config.URLS_TABLE}"
+SORT_DATA_IN_FEEDBACKS_TASK_ID: str = global_dag_config.SORT_DATA_IN_TABLE_TASK_ID+f"_{config.FEEDBACKS_TABLE}"
 
 """Names for TMP tables.
 """
