@@ -5,6 +5,8 @@ from airflow.sensors.external_task import ExternalTaskSensor
 from dags import global_dag_config, global_dag_task
 from dags.update.products import update_products_dag_config as dag_config
 from dags.update.products import update_products_dag_task as dag_task
+from src import config
+from src.database.postgres import postgres_db_constant
 
 with DAG(
         dag_id=global_dag_config.UPDATE_PRODUCTS_TABLE_DAG_ID,
@@ -51,9 +53,19 @@ with DAG(
         }
     )
 
+    sort_data_in_products_task = PythonOperator(
+        task_id=dag_config.SORT_DATA_IN_PRODUCTS_TASK_ID,
+        python_callable=global_dag_task.sort_data_in_table,
+        op_kwargs={
+            "table_name": config.PRODUCT_TABLE,
+            "index": postgres_db_constant.INDEX_PRODUCTS
+        }
+    )
+
     """Setting up a tasks sequence
     """
     wait_for_add_products_sensor >> get_card_urls_from_table_products_task
     get_card_urls_from_table_products_task >> find_update_for_products_task
     find_update_for_products_task >> upload_updated_data_to_table_task
     upload_updated_data_to_table_task >> clear_xcom_cache_task
+    clear_xcom_cache_task >> sort_data_in_products_task
