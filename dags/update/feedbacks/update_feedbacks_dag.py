@@ -16,6 +16,8 @@ from airflow.sensors.external_task import ExternalTaskSensor
 from dags import global_dag_config, global_dag_task
 from dags.update.feedbacks import update_feedbacks_dag_config as dag_config
 from dags.update.feedbacks import update_feedbacks_dag_task as dag_task
+from src import config
+from src.database.postgres import postgres_db_constant
 
 with DAG(
         dag_id=global_dag_config.UPDATE_FEEDBACKS_TABLE_DAG_ID,
@@ -62,9 +64,19 @@ with DAG(
         }
     )
 
+    sort_data_in_feedbacks_task = PythonOperator(
+        task_id=dag_config.SORT_DATA_IN_FEEDBACKS_TASK_ID,
+        python_callable=global_dag_task.sort_data_in_table,
+        op_kwargs={
+            "table_name": config.FEEDBACKS_TABLE,
+            "index": postgres_db_constant.INDEX_FEEDBACKS
+        }
+    )
+
     """Setting up a tasks sequence
     """
     wait_for_add_products_sensor >> get_root_and_product_ids_from_table_products_task
     get_root_and_product_ids_from_table_products_task >> find_update_for_feedbacks_task
     find_update_for_feedbacks_task >> upload_updated_data_to_table_task
     upload_updated_data_to_table_task >> clear_xcom_cache_task
+    clear_xcom_cache_task >> sort_data_in_feedbacks_task
