@@ -6,6 +6,7 @@ from datetime import datetime
 
 from airflow.utils.dates import days_ago
 
+from dags import global_dag_config
 from src import config
 from src.database.postgres import postgres_db_constant
 
@@ -25,6 +26,8 @@ WAIT_FOR_ADD_PRODUCTS_SENSOR_ID: str = "wait_for_add_products"
 GET_ROOT_AND_PRODUCT_IDS_FROM_TABLE_PRODUCTS_TASK_ID: str = "get_root_and_product_ids_from_table_products"
 FIND_UPDATE_FOR_FEEDBACKS_TASK_ID: str = "find_update_for_feedbacks"
 UPLOAD_UPDATED_DATA_TO_TABLE_TASK_ID: str = "upload_updated_data_to_table"
+SORT_DATA_IN_FEEDBACKS_TASK_ID: str = global_dag_config.SORT_DATA_IN_TABLE_TASK_ID+f"_{config.FEEDBACKS_TABLE}"
+
 
 """SQL queries"""
 SELECT_IDS_FROM_TABLE_PRODUCTS_QUERY: str = f"""
