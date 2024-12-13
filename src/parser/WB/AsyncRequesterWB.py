@@ -4,7 +4,6 @@ import time
 import pandas as pd
 from playwright.async_api import async_playwright, Browser, Page
 
-from src import config
 from src.parser.WB import constants
 
 
