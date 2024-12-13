@@ -5,18 +5,18 @@ import os
 
 NULL_VALUE = None
 
-POSTGRES_USERNAME = os.environ.get('POSTGRES_USERNAME')
-POSTGRES_PASSWORD = os.environ.get('POSTGRES_PASSWORD')
-POSTGRES_DB_NAME = os.environ.get('POSTGRES_DB')
-POSTGRES_HOST = "postgres"
+POSTGRES_USERNAME: str = os.environ.get('POSTGRES_USERNAME')
+POSTGRES_PASSWORD: str = os.environ.get('POSTGRES_PASSWORD')
+POSTGRES_DB_NAME: str = os.environ.get('POSTGRES_DB')
+POSTGRES_HOST: str = "postgres"
 
-PRODUCT_TABLE = "products"
+PRODUCT_TABLE: str = "products"
 
-PRICE_HISTORY_TABLE = "price_history"
-PRICE_TABLE = "price"
+PRICE_HISTORY_TABLE: str = "price_history"
+PRICE_TABLE: str = "price"
 
-FEEDBACKS_TABLE = "feedbacks"
-GRADE_TABLE = "grade"
-GRADE_HISTORY_TABLE = "grade_history"
+FEEDBACKS_TABLE: str = "feedbacks"
+GRADE_TABLE: str = "grade"
+GRADE_HISTORY_TABLE: str = "grade_history"
 
-URLS_TABLE = "urls"
+URLS_TABLE: str = "urls"
