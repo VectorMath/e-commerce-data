@@ -9,12 +9,14 @@ The DAG have the following pipeline:
 """
 
 from airflow import DAG
-from airflow.operators.python import PythonOperator
+from airflow.operators.python import PythonOperator, BranchPythonOperator
 from airflow.sensors.external_task import ExternalTaskSensor
 
-from dags import global_dag_config
+from dags import global_dag_config, global_dag_task
 from dags.update.grade_history import update_grade_history_dag_config as dag_config
 from dags.update.grade_history import update_grade_history_dag_task as dag_task
+from src import config
+from src.database.postgres import postgres_db_constant
 
 # Define the DAG
 with DAG(
@@ -36,6 +38,12 @@ with DAG(
 
     """Define tasks on DAG
     """
+    check_existing_of_table_task = BranchPythonOperator(
+        task_id="check_existing_of_table",
+        python_callable=dag_task.check_existing_of_grade_history_table,
+        provide_context=True
+    )
+
     create_table_grade_history_if_not_exists_task = PythonOperator(
         task_id=dag_config.CREATE_TABLE_GRADE_HISTORY_IF_NOT_EXISTS_TASK_ID,
         python_callable=dag_task.create_table_grade_history_if_not_exists
@@ -46,5 +54,31 @@ with DAG(
         python_callable=dag_task.update_table_grade_history
     )
 
-    wait_for_create_table_grade_dag_sensor >> create_table_grade_history_if_not_exists_task
-    create_table_grade_history_if_not_exists_task >> update_table_grade_history_task
+    sort_data_in_grade_history_task = PythonOperator(
+        task_id=dag_config.SORT_DATA_IN_GRADE_HISTORY_TASK_ID,
+        python_callable=global_dag_task.sort_data_in_table,
+        op_kwargs={
+            "table_name": config.GRADE_HISTORY_TABLE,
+            "index": postgres_db_constant.INDEX_GRADE_HISTORY
+        }
+    )
+
+    update_table_grade_history_after_create_task = PythonOperator(
+        task_id=dag_config.UPDATE_TABLE_GRADE_HISTORY_AFTER_CREATE_TASK_ID,
+        python_callable=dag_task.update_table_grade_history
+    )
+
+    sort_data_in_grade_history_after_create_task = PythonOperator(
+        task_id=dag_config.SORT_DATA_IN_GRADE_HISTORY_AFTER_CREATE_TASK_ID,
+        python_callable=global_dag_task.sort_data_in_table,
+        op_kwargs={
+            "table_name": config.GRADE_HISTORY_TABLE,
+            "index": postgres_db_constant.INDEX_GRADE_HISTORY
+        }
+    )
+
+    """Define the dependencies"""
+    wait_for_create_table_grade_dag_sensor >> check_existing_of_table_task
+    check_existing_of_table_task >> [create_table_grade_history_if_not_exists_task, update_table_grade_history_task]
+    create_table_grade_history_if_not_exists_task >> update_table_grade_history_after_create_task >> sort_data_in_grade_history_after_create_task
+    update_table_grade_history_task >> sort_data_in_grade_history_task
