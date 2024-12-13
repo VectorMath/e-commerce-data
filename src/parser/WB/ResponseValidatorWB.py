@@ -6,6 +6,11 @@ class ResponseValidatorWB:
     Using in methods of class ParserWB.
     """
 
+    def __new__(cls, *args, **kwargs):
+        """In case if someone want to create object of this class
+        """
+        raise TypeError("Unable to create static class")
+
     @staticmethod
     def validate_product_list_id(response: dict) -> bool:
         """Static method that validate json-structure
