@@ -1,10 +1,10 @@
-# Базовый образ Apache Airflow
+# Base image of Apache Airflow
 FROM apache/airflow:2.10.3
 
-# Используем пользователя root для установки системных зависимостей
+# Use user root for running installation
 USER root
 
-# Устанавливаем необходимые зависимости для Playwright
+# Install dependencies for library PlayWright
 RUN apt-get update && apt-get install -y \
     curl \
     libx11-xcb1 \
@@ -24,11 +24,11 @@ RUN apt-get update && apt-get install -y \
     libdrm2 \
     && rm -rf /var/lib/apt/lists/*
 
-# Переключаемся на пользователя airflow для установки Python-зависимостей
+# Checkout in user airflow. That need to make run installation of library
 USER ${AIRFLOW_UID}
 
-# Устанавливаем Playwright для Python
+# Install library PlayWright in Python
 RUN pip install playwright
 
-# Устанавливаем браузеры для Playwright
+# Install browsers for work in PlayWright
 RUN playwright install
