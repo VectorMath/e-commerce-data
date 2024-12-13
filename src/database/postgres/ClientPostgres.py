@@ -1,3 +1,5 @@
+from typing import Any
+
 import pandas
 import psycopg2.errors
 
@@ -18,17 +20,17 @@ class ClientPostgres(IClient):
     def close_connection(self):
         """Realization of method close_connection from interface IClient.
         """
-        self.get_connector().close_connection()
+        self._connector.close_connection()
 
     def execute_sql(self, query: str, is_return: bool):
         """Realization of method execute_sql from interface IClient.
         """
         try:
-            self.get_connector().get_cursor().execute(query)
+            self._connector.get_cursor().execute(query)
             if is_return:
-                return self.get_connector().get_cursor().fetchall()
+                return self._connector.get_cursor().fetchall()
             else:
-                self.get_connector().get_connection().commit()
+                self._connector.get_connection().commit()
         except psycopg2.errors.OperationalError as e:
             print(f"[{self.__class__.__name__}] Operational error: {str(e)}")
             raise e
@@ -43,11 +45,11 @@ class ClientPostgres(IClient):
         """Realization of method create_dataframe_by_sql from interface IClient.
         """
         try:
-            self.get_connector().get_cursor().execute(query)
-            data = self.get_connector().get_cursor().fetchall()
+            self._connector.get_cursor().execute(query)
+            data: Any = self._connector.get_cursor().fetchall()
 
             return pandas.DataFrame(data,
-                                    columns=[desc[0] for desc in self.get_connector().get_cursor().description])
+                                    columns=[desc[0] for desc in self._connector.get_cursor().description])
         except psycopg2.errors.OperationalError as e:
             print(f"[{self.__class__.__name__}] Operational error: {str(e)}")
             raise e
@@ -86,9 +88,9 @@ class ClientPostgres(IClient):
         insert_query = f"INSERT INTO {table_name} ({insert_columns}) VALUES ({placeholders})"
 
         for row in df.itertuples(index=False, name=None):
-            self.get_connector().get_cursor().execute(insert_query, row)
+            self._connector.get_cursor().execute(insert_query, row)
 
-        self.get_connector().get_connection().commit()
+        self._connector.get_connection().commit()
 
     def update_table_in_db_by_df(self,
                                  df: pandas.DataFrame,
@@ -98,9 +100,11 @@ class ClientPostgres(IClient):
                                  data_type: dict):
         """Realization of method update_table_in_db_by_df from interface IClient.
         """
-        self.create_table_in_db_by_df(df, tmp_table_name, data_type)
+        self.create_table_in_db_by_df(df=df,
+                                      table_name=tmp_table_name,
+                                      data_type=data_type)
 
-        sql_where_cases = ' AND '.join(
+        sql_where_cases: str = ' AND '.join(
             [f"{table_name}.{column} = {tmp_table_name}.{column}"
              for column in list(data_type.keys())])
 
@@ -131,8 +135,8 @@ class ClientPostgres(IClient):
                 WHERE {sql_where_cases}
             );
             '''
-        self.get_connector().get_cursor().execute(query)
-        self.get_connector().get_connection().commit()
+        self._connector.get_cursor().execute(query)
+        self._connector.get_connection().commit()
         self.execute_sql(f"DROP TABLE IF EXISTS {tmp_table_name}", False)
 
     def get_connector(self) -> ConnectorPostgres:
