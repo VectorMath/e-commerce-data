@@ -27,6 +27,8 @@ This project created for work with different **russian** web stores. In project,
     * **Removing data of products that's does not exist already**
     * **Creating tables**
 
+* Presentation-report with data from DB in Power BI
+
 ## Main technology stack
 
 <p align="center">
@@ -97,6 +99,11 @@ This project created for work with different **russian** web stores. In project,
 </p>
 
 ## Project structure
+
+* [**bi**](bi) - The folder with BI part of project.
+  * [**queries**](bi/queries.sql) - File with SQL commands that using in Power BI file.
+  * [**report-analyse**](bi/report-analys.pbix) - Power BI file with report-presentation.
+
 
 * [**dags**](dags) - The folder with Airflow DAGs.
     * [**add**](dags/add) - The folder with DAGs that make functional of adding new data in database.
